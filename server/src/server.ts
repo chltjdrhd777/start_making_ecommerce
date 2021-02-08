@@ -15,8 +15,7 @@ app.use(cookieparser());
 dotenv.config();
 
 //initializing mongoose
-//mongoose password : zXus9CetJfvbmJ3m
-//mongoose db : mongodb+srv://Anderson:zXus9CetJfvbmJ3m@mernecommerce.bhuqo.mongodb.net/ecommerceProject?retryWrites=true&w=majority
+
 mongoose
   .connect(
     `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@mernecommerce.bhuqo.mongodb.net/${process.env.MONGO_DB_DATABASE}?retryWrites=true&w=majority`,
