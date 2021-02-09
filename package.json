@@ -1,0 +1,20 @@
+{
+  "name": "mern-ecommerce",
+  "version": "1.0.0",
+  "description": "-redux\r -typescript\r -express\r -nodeJS\r -react",
+  "main": "index.js",
+  "scripts": {
+    "git": "git add . && git commit -m update && git push origin master"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chltjdrhd777/start_making_ecommerce.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chltjdrhd777/start_making_ecommerce/issues"
+  },
+  "homepage": "https://github.com/chltjdrhd777/start_making_ecommerce#readme"
+}

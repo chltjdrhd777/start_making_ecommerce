@@ -1,16 +1,12 @@
 import { Router } from "express";
 import { register, login } from "../controller/auth.admin";
-import veryifyChecker from "../middleware/verifyCheck";
+import { formValidators, formLoginValidators, validatedResult } from "../middleware/Validator";
 
 const router = Router();
 
 //typeDef
-router.post("/register", register);
+router.post("/register", formValidators, validatedResult, register);
 
-router.post("/login", login);
-
-router.post("/profile", veryifyChecker, (req, res) => {
-  res.json({ message: "work" });
-});
+router.post("/login", formLoginValidators, validatedResult, login);
 
 export default router;

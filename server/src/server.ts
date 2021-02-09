@@ -6,6 +6,7 @@ import cookieparser from "cookie-parser";
 import mongoose from "mongoose";
 import authRoutes from "./routes/authRoutes";
 import adminAuthRoutes from "./routes/authRoutes.admin";
+import categoryRoutes from "./routes/category";
 //initializing app
 const app = express();
 app.use(cors());
@@ -38,7 +39,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/auth_admin", adminAuthRoutes);
-
+app.use("/api/product_category", categoryRoutes);
 //PORT
 app.listen(process.env.PORT, () => {
   console.log(`listening port : ${process.env.PORT}`);

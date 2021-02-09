@@ -36,7 +36,6 @@ const userSchema: Schema<UserBaseDocumentType, UserStatics> = new mongoose.Schem
     },
     profileName: {
       type: String,
-      required: true,
       trim: true,
       unique: true,
       index: true,
