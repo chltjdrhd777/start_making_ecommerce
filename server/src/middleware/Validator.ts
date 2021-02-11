@@ -1,4 +1,7 @@
 import { check, validationResult } from "express-validator";
+import jwt from "jsonwebtoken";
+import { CustomProductRequest } from "../controller/products";
+import User from "../model/UserModel";
 
 const formValidators = [
   check("firstName").notEmpty().withMessage("firstName is required"),
@@ -21,4 +24,23 @@ const validatedResult = (req, res, next) => {
   }
 };
 
-export { formValidators, formLoginValidators, validatedResult };
+const requireAdminAuth = (req, res, next) => {
+  const token = req.cookies.authorized_admin;
+  const verifiedAdmin = jwt.verify(token, process.env.JWT_SECRET);
+  if (!token || !verifiedAdmin) {
+    res.status(400).json({ success: false, message: "you are not an admin" });
+  } else {
+    req.allowedAdmin = verifiedAdmin;
+    next();
+  }
+};
+
+const adminCheker = (req: CustomProductRequest, res, next) => {
+  User.findOne({ _id: req.allowedAdmin._id }, null, null, (err, doc) => {
+    if (doc.role !== "admin") res.status(400).json({ success: false, message: "you are not an admin" });
+
+    next();
+  });
+};
+
+export { formValidators, formLoginValidators, validatedResult, requireAdminAuth, adminCheker };

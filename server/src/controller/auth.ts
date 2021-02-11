@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import User, { UserBaseDocumentType } from "../model/UserModel";
 import jwt from "jsonwebtoken";
 
-export interface CustomRequest extends Request<{}, {}, UserBaseDocumentType> {}
+export interface CustomUserRequest extends Request<{}, {}, UserBaseDocumentType> {}
 
-const register = (req: CustomRequest, res: Response) => {
+const register = (req: CustomUserRequest, res: Response) => {
   User.findOne({ email: req.body.email }, null, null, (err, targetUser) => {
     //conditions/////
     if (err)
@@ -33,7 +33,7 @@ const register = (req: CustomRequest, res: Response) => {
   });
 };
 
-const login = (req: CustomRequest, res: Response) => {
+const login = (req: CustomUserRequest, res: Response) => {
   User.findOne({ email: req.body.email }, null, null, (err, targetUser) => {
     //conditions/////
     if (err) return res.status(400).json({ success: false, message: "cannot find user" });

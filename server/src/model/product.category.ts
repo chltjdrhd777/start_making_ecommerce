@@ -1,16 +1,15 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 
 //typeDef
-export interface CategoryBaseDocumentType extends Document {
+export interface ProductBaseDocumentType extends Document {
   name: string;
   slug: string;
-  parentID: string;
 }
 
-interface CategoryStatics extends Model<CategoryBaseDocumentType> {}
+interface ProductStatics extends Model<ProductBaseDocumentType> {}
 
 //Schema
-const categorySchema: Schema<CategoryBaseDocumentType, CategoryStatics> = new mongoose.Schema(
+const productSchema: Schema<ProductBaseDocumentType, ProductStatics> = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -22,9 +21,18 @@ const categorySchema: Schema<CategoryBaseDocumentType, CategoryStatics> = new mo
       required: true,
       unique: true,
     },
-    parentID: {
-      type: String,
+    /*     price: {
+      type: Number,
+      required: true,
     },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    offer: {
+      type: Number,
+    }, */
   },
   { timestamps: true }
 );
@@ -34,4 +42,4 @@ const categorySchema: Schema<CategoryBaseDocumentType, CategoryStatics> = new mo
 //methods
 
 //export
-export default mongoose.model<CategoryBaseDocumentType, CategoryStatics>("Category", categorySchema);
+export default mongoose.model<ProductBaseDocumentType, ProductStatics>("Product", productSchema);
