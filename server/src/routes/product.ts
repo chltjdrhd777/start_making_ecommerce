@@ -1,4 +1,4 @@
-import { Router } from "express";
+/* import { Router } from "express";
 import { adminCheker, requireAdminAuth } from "../middleware/Validator";
 import { createProduct, getProducts } from "../controller/products";
 
@@ -8,3 +8,4 @@ router.post("/createCategory", requireAdminAuth, adminCheker, createProduct);
 router.get("/getProducts", getProducts);
 
 export default router;
+ */

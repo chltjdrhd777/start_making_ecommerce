@@ -1,4 +1,4 @@
-import { ProductBaseDocumentType } from "../model/product.category";
+/* import { ProductBaseDocumentType } from "../model/product.category";
 import slugify from "slugify";
 import Products from "../model/product.category";
 import { Request, Response } from "express";
@@ -36,3 +36,4 @@ const getProducts = (req, res: Response) => {
 };
 
 export { createProduct, getProducts };
+ */

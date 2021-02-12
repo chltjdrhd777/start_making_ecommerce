@@ -1,7 +1,7 @@
 import { check, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
-import { CustomProductRequest } from "../controller/products";
 import User from "../model/UserModel";
+import { Request } from "express";
 
 const formValidators = [
   check("firstName").notEmpty().withMessage("firstName is required"),
@@ -24,23 +24,19 @@ const validatedResult = (req, res, next) => {
   }
 };
 
-const requireAdminAuth = (req, res, next) => {
+const requiredAdminAuth = (req: Request, res, next) => {
   const token = req.cookies.authorized_admin;
-  const verifiedAdmin = jwt.verify(token, process.env.JWT_SECRET);
-  if (!token || !verifiedAdmin) {
-    res.status(400).json({ success: false, message: "you are not an admin" });
+  const verifiedCheck: any = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!token || !verifiedCheck) {
+    res.status(400).json({ success: false, massage: "you are not verified" });
   } else {
-    req.allowedAdmin = verifiedAdmin;
-    next();
+    User.findOne({ _id: verifiedCheck._id }, undefined, undefined, (err, doc) => {
+      if (doc.role !== "admin") return res.status(400).json({ success: false, message: "you are not an admin" });
+
+      next();
+    });
   }
 };
 
-const adminCheker = (req: CustomProductRequest, res, next) => {
-  User.findOne({ _id: req.allowedAdmin._id }, null, null, (err, doc) => {
-    if (doc.role !== "admin") res.status(400).json({ success: false, message: "you are not an admin" });
-
-    next();
-  });
-};
-
-export { formValidators, formLoginValidators, validatedResult, requireAdminAuth, adminCheker };
+export { formValidators, formLoginValidators, validatedResult, requiredAdminAuth };
