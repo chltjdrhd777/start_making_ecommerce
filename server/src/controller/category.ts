@@ -36,7 +36,30 @@ const getCategory = (req: CustomProductRequest, res) => {
   Category.find({}, (err, docs) => {
     if (err) return res.status(400).json({ err });
 
-    res.status(200).json({ success: true, docs });
+    const makingCategoryTree = (docs, parentId = undefined) => {
+      let categoryList = [];
+      let data;
+
+      if (parentId === undefined) {
+        data = docs.filter((doc) => doc.parentId === undefined);
+      } else {
+        data = docs.filter((doc) => doc.parentId === parentId);
+      }
+
+      for (let each of data) {
+        categoryList.push({
+          _id: each._id,
+          name: each.name,
+          slug: each.slug,
+          children: makingCategoryTree(docs, each._id.toString()),
+        });
+      }
+
+      return categoryList;
+    };
+    const categoryList = makingCategoryTree(docs);
+
+    res.status(200).json({ success: true, docs, categoryList });
   });
 };
 
