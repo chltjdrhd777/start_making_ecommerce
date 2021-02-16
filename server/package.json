@@ -28,9 +28,15 @@
     "express-validator": "^6.9.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.15",
+    "multer": "^1.4.2",
     "nodemon": "^1.11.0",
+    "shortid": "^2.2.16",
     "slugify": "^1.4.6",
     "ts-node": "^9.1.1",
     "typescript": "^3.5.1"
+  },
+  "devDependencies": {
+    "@types/multer": "^1.4.5",
+    "@types/shortid": "0.0.29"
   }
 }

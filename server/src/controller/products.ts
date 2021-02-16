@@ -1,39 +1,11 @@
-/* import { ProductBaseDocumentType } from "../model/product.category";
-import slugify from "slugify";
-import Products from "../model/product.category";
+import { ProductBaseDocumentType } from "../model/product";
 import { Request, Response } from "express";
+import shortid from "shortid";
 
-export interface CustomProductRequest extends Request<{}, {}, ProductBaseDocumentType> {
-  allowedAdmin?: {
-    _id: string;
-    profileName: string;
-    iat: number;
-    exp: number;
-  };
-}
+export interface CustomProductRequest extends Request<{}, {}, ProductBaseDocumentType> {}
 
 const createProduct = (req: CustomProductRequest, res: Response) => {
-  const categoryData = {
-    name: req.body.name,
-    slug: slugify(req.body.name), //for making unique product information
-  };
-
-  const products = new Products(categoryData);
-  products.save(null, (err, doc) => {
-    if (err) return res.status(400).json({ success: false, err });
-    if (doc) {
-      return res.status(201).json({ doc });
-    }
-  });
+  res.status(200).json({ file: req.file, body: req.body });
 };
 
-const getProducts = (req, res: Response) => {
-  Products.find({}, (err, docs) => {
-    if (err) return res.status(400).json({ err });
-
-    res.status(200).json({ docs });
-  });
-};
-
-export { createProduct, getProducts };
- */
+export { createProduct };

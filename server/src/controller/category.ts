@@ -3,14 +3,7 @@ import { CategoryBaseDocumentType } from "../model/category";
 import slugify from "slugify";
 import Category from "../model/category";
 
-export interface CustomProductRequest extends Request<{}, {}, CategoryBaseDocumentType> {
-  allowedAdmin?: {
-    _id: string;
-    profileName: string;
-    iat: number;
-    exp: number;
-  };
-}
+export interface CustomProductRequest extends Request<{}, {}, CategoryBaseDocumentType> {}
 
 const createCategory = (req: CustomProductRequest, res) => {
   const categoryObj = {

@@ -3,7 +3,7 @@ import { register, login } from "../controller/auth";
 
 const router = Router();
 
-//typeDef
+//routes
 router.post("/register", register);
 
 router.post("/login", login);

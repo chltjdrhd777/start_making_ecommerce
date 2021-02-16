@@ -1,4 +1,4 @@
-/* import mongoose, { Document, Schema, Model } from "mongoose";
+import mongoose, { Document, Schema, Model } from "mongoose";
 
 //typeDef
 export interface ProductBaseDocumentType extends Document {
@@ -40,7 +40,7 @@ const productSchema: Schema<ProductBaseDocumentType, ProductStatics> = new mongo
     productPictures: [{ img: { type: String } }],
     reviews: [{ type: mongoose.SchemaTypes.ObjectId, ref: "User", review: String }],
     createdBy: { type: mongoose.SchemaTypes.ObjectId, ref: "User" },
-    category:{type:mongoose.SchemaTypes.ObjectId, ref:"Product"},
+    category: { type: mongoose.SchemaTypes.ObjectId, ref: "Category" },
     updatedAt: Date,
   },
   { timestamps: true }
@@ -52,4 +52,3 @@ const productSchema: Schema<ProductBaseDocumentType, ProductStatics> = new mongo
 
 //export
 export default mongoose.model<ProductBaseDocumentType, ProductStatics>("Product", productSchema);
- */

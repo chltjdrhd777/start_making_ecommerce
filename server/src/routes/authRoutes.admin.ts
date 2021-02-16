@@ -4,7 +4,7 @@ import { formValidators, formLoginValidators, validatedResult } from "../middlew
 
 const router = Router();
 
-//typeDef
+//routes
 router.post("/register", formValidators, validatedResult, register);
 
 router.post("/login", formLoginValidators, validatedResult, login);
