@@ -42,6 +42,21 @@ const requiredAdminAuth = (req, res, next) => {
   }
 };
 
+const requiredUserAuth = (req, res, next) => {
+  const token = req.cookies.authorized_user;
+  const verifiedCheck: any = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!token || !verifiedCheck) {
+    res.status(400).json({ success: false, massage: "you are not verified" });
+  } else {
+    User.findOne({ _id: verifiedCheck._id }, undefined, undefined, (err, doc) => {
+      if (doc.role !== "user") return res.status(400).json({ success: false, message: "you are not an user" });
+      req.userData = doc;
+      next();
+    });
+  }
+};
+
 const uploadPictures = () => {
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -57,4 +72,4 @@ const uploadPictures = () => {
   return upload.array("productPictures");
 };
 
-export { formValidators, formLoginValidators, validatedResult, requiredAdminAuth, uploadPictures };
+export { formValidators, formLoginValidators, validatedResult, requiredAdminAuth, requiredUserAuth, uploadPictures };
