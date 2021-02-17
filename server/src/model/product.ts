@@ -10,6 +10,9 @@ export interface ProductBaseDocumentType extends Document {
   productPictures: { img: string }[];
   updatedAt: Date;
   createdBy: any;
+  review: any;
+  category: any;
+  quantity: number;
 }
 
 interface ProductStatics extends Model<ProductBaseDocumentType> {}
@@ -37,8 +40,9 @@ const productSchema: Schema<ProductBaseDocumentType, ProductStatics> = new mongo
     offer: {
       type: Number,
     },
+    quantity: { type: Number },
     productPictures: [{ img: { type: String } }],
-    reviews: [{ type: mongoose.SchemaTypes.ObjectId, ref: "User", review: String }],
+    review: [{ type: mongoose.SchemaTypes.ObjectId, ref: "User", review: String }],
     createdBy: { type: mongoose.SchemaTypes.ObjectId, ref: "User" },
     category: { type: mongoose.SchemaTypes.ObjectId, ref: "Category" },
     updatedAt: Date,

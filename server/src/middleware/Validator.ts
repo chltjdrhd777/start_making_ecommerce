@@ -2,6 +2,9 @@ import { check, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import User from "../model/UserModel";
 import { Request } from "express";
+import multer from "multer";
+import shortid from "shortid";
+import path from "path";
 
 const formValidators = [
   check("firstName").notEmpty().withMessage("firstName is required"),
@@ -24,7 +27,7 @@ const validatedResult = (req, res, next) => {
   }
 };
 
-const requiredAdminAuth = (req: Request, res, next) => {
+const requiredAdminAuth = (req, res, next) => {
   const token = req.cookies.authorized_admin;
   const verifiedCheck: any = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -33,10 +36,25 @@ const requiredAdminAuth = (req: Request, res, next) => {
   } else {
     User.findOne({ _id: verifiedCheck._id }, undefined, undefined, (err, doc) => {
       if (doc.role !== "admin") return res.status(400).json({ success: false, message: "you are not an admin" });
-
+      req.adminData = doc;
       next();
     });
   }
 };
 
-export { formValidators, formLoginValidators, validatedResult, requiredAdminAuth };
+const uploadPictures = () => {
+  const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, path.join(path.dirname(__dirname), "uploads"));
+    },
+    filename: function (req, file, cb) {
+      cb(null, `${shortid.generate()}-${file.originalname}`);
+    },
+  });
+
+  const upload = multer({ storage });
+
+  return upload.array("productPictures");
+};
+
+export { formValidators, formLoginValidators, validatedResult, requiredAdminAuth, uploadPictures };
