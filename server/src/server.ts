@@ -9,9 +9,10 @@ import adminAuthRoutes from "./routes/authRoutes.admin";
 import categoryRoutes from "./routes/categoryRoutes";
 import productRoutes from "./routes/productRoutes";
 import cartRoutes from "./routes/cartRoutes";
+import path from "path";
 //initializing app
 const app = express();
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieparser());
@@ -39,6 +40,7 @@ app.get("/", (req, res) => {
   res.json({ message: "hello this is a test page" });
 });
 
+app.use("/public", express.static(path.join(__dirname, "uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/auth_admin", adminAuthRoutes);
 app.use("/api/category", categoryRoutes);

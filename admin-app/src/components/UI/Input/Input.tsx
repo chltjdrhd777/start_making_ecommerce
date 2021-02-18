@@ -6,7 +6,7 @@ interface InputProps {
   type: string;
   placeholder: string;
   value: string;
-  onChange: () => any;
+  onChange: (e?: any) => any;
 }
 
 export default function Input({ label, type, placeholder, value, onChange }: InputProps) {

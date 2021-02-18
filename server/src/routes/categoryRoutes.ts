@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { createCategory, getCategory } from "../controller/category";
-import { requiredAdminAuth } from "../middleware/Validator";
+import { requiredAdminAuth, uploadPictures } from "../middleware/Validator";
 
 const router = Router();
 
-router.post("/createCategory", requiredAdminAuth, createCategory);
+router.post("/createCategory", requiredAdminAuth, uploadPictures("single"), createCategory);
 router.get("/getCategory", getCategory);
 
 export default router;

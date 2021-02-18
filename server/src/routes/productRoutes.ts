@@ -4,6 +4,6 @@ import { createProduct } from "../controller/products";
 
 const router = Router();
 
-router.post("/createProduct", requiredAdminAuth, uploadPictures(), createProduct);
+router.post("/createProduct", requiredAdminAuth, uploadPictures("array"), createProduct);
 
 export default router;

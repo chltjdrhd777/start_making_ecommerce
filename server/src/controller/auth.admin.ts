@@ -35,20 +35,20 @@ const register = (req: CustomUserRequest, res: Response) => {
 };
 
 const login = (req: CustomUserRequest, res: Response) => {
-  Admin.findOne({ email: req.body.email }, null, null, (err, targetUser) => {
+  Admin.findOne({ email: req.body.email }, null, null, (err, targetAdmin) => {
     //conditions/////
     if (err) return res.status(400).json({ success: false, message: "cannot find admin" });
 
-    if (!targetUser) return res.status(400).json({ success: false, message: "no admin" });
+    if (!targetAdmin) return res.status(400).json({ success: false, message: "no admin" });
 
     //after/////
-    targetUser.authentification(req.body.password).then((isEqual) => {
+    targetAdmin.authentification(req.body.password).then((isEqual) => {
       if (!isEqual) return res.status(400).json({ success: false, message: "wrong password" });
 
-      const token = jwt.sign({ _id: targetUser._id, role: targetUser.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-      targetUser.token = token;
-      targetUser.save();
-      res.cookie("authorized_admin", token).status(200).json({ success: true, message: "login complete and token updated" });
+      const token = jwt.sign({ _id: targetAdmin._id, role: targetAdmin.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+      targetAdmin.token = token;
+      targetAdmin.save();
+      res.cookie("authorized_admin", token).status(200).json({ success: true, message: "login complete and token updated", targetAdmin });
     });
   });
 };

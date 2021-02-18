@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { createGlobalStyle } from "styled-components";
+import { Provider } from "react-redux";
+import { createStore } from "./redux/store";
 
 const GlobalCSS = createGlobalStyle`
   margin:0;
@@ -15,8 +17,10 @@ const GlobalCSS = createGlobalStyle`
 
 ReactDOM.render(
   <>
-    <GlobalCSS />
-    <App />
+    <Provider store={createStore()}>
+      <GlobalCSS />
+      <App />
+    </Provider>
   </>,
 
   document.getElementById("root")

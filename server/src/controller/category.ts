@@ -2,18 +2,27 @@ import { Request } from "express";
 import { CategoryBaseDocumentType } from "../model/category";
 import slugify from "slugify";
 import Category from "../model/category";
+import { UserBaseDocumentType } from "../model/UserModel";
 
-export interface CustomProductRequest extends Request<{}, {}, CategoryBaseDocumentType> {}
+export interface CustomCategorytRequest extends Request<{}, {}, CategoryBaseDocumentType> {
+  adminData: UserBaseDocumentType;
+}
 
-const createCategory = (req: CustomProductRequest, res) => {
+const createCategory = (req: CustomCategorytRequest, res) => {
+  //res.status(200).json({ file: req.file, admin: req.adminData });
   const categoryObj = {
     name: req.body.name,
     slug: slugify(req.body.name),
     parentId: undefined,
+    categoryImage: undefined,
   };
 
   if (req.body.parentId) {
     categoryObj.parentId = req.body.parentId;
+  }
+
+  if (req.file) {
+    categoryObj.categoryImage = `${process.env.HOSTAPI}/public/${req.file.filename}`;
   }
 
   const cat = new Category(categoryObj);
@@ -25,7 +34,7 @@ const createCategory = (req: CustomProductRequest, res) => {
   });
 };
 
-const getCategory = (req: CustomProductRequest, res) => {
+const getCategory = (req: CustomCategorytRequest, res) => {
   Category.find({}, (err, docs) => {
     if (err) return res.status(400).json({ err });
 

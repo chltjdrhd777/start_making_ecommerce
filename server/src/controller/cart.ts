@@ -14,9 +14,14 @@ const createCart = (req: CustomCartRequest, res) => {
       //if cart already exists && same item is exist already, change the quantity
       const targetProduct = req.body.item.product;
       const isItemAdded = doc.cartItems.find((e) => e.product == targetProduct);
+      let condition, action;
 
       if (isItemAdded) {
-        Cart.findOneAndUpdate(
+        condition = { user: req.userData._id, cartItems: { $elemMatch: { product: targetProduct } } };
+        action = {
+          $set: { "cartItems.$.quantity": isItemAdded.quantity + req.body.item.quantity },
+        };
+        /* Cart.findOneAndUpdate(
           { user: req.userData._id, cartItems: { $elemMatch: { product: targetProduct } } },
           {
             $set: { "cartItems.$.quantity": isItemAdded.quantity + req.body.item.quantity },
@@ -26,8 +31,14 @@ const createCart = (req: CustomCartRequest, res) => {
             if (err) return res.status(400).json({ err });
             res.status(201).json({ doc });
           }
-        );
+        ); */
       } else {
+        (condition = { user: req.userData._id }),
+          (action = {
+            $push: {
+              cartItems: req.body.item,
+            },
+          }); /* 
         Cart.findOneAndUpdate(
           { user: req.userData._id },
           {
@@ -40,8 +51,13 @@ const createCart = (req: CustomCartRequest, res) => {
             if (err) return res.status(400).json({ err });
             res.status(200).json({ doc });
           }
-        );
+        ); */
       }
+
+      Cart.findOneAndUpdate(condition, action, { new: true }, (err, doc) => {
+        if (err) return res.status(400).json({ err });
+        res.status(200).json({ doc });
+      });
     } else {
       //if there is not a cart, make a new cart
       const cart = new Cart({

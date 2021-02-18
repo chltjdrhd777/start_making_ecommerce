@@ -42,7 +42,7 @@ const productSchema: Schema<ProductBaseDocumentType, ProductStatics> = new mongo
     },
     quantity: { type: Number },
     productPictures: [{ img: { type: String } }],
-    review: [{ type: mongoose.SchemaTypes.ObjectId, ref: "User", review: String }],
+    review: { type: mongoose.SchemaTypes.ObjectId, ref: "User", review: String },
     createdBy: { type: mongoose.SchemaTypes.ObjectId, ref: "User" },
     category: { type: mongoose.SchemaTypes.ObjectId, ref: "Category" },
     updatedAt: Date,

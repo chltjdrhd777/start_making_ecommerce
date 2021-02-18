@@ -11,7 +11,7 @@ export interface CustomProductRequest extends Request<{}, {}, ProductBaseDocumen
 
 const createProduct = (req: CustomProductRequest, res: Response) => {
   //res.status(200).json({ files: req.files, admin: req.adminData });
-  const { name, price, description, offer, review, createdBy, category, updatedAt, quantity } = req.body;
+  const { name, price, description, offer, review, category, updatedAt, quantity } = req.body;
 
   let productPictures = [] as { img: string }[];
 
@@ -30,10 +30,11 @@ const createProduct = (req: CustomProductRequest, res: Response) => {
     category,
     createdBy: req.adminData._id,
     quantity,
+    review,
   });
 
   product.save(undefined, (err, doc) => {
-    if (err) return res.status(400).json({ success: true, err });
+    if (err) return res.status(400).json({ success: false, err });
 
     res.status(200).json({ success: true, doc });
   });

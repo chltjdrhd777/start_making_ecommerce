@@ -4,6 +4,7 @@ export interface CategoryBaseDocumentType extends Document {
   name: string;
   slug: string;
   parentId?: string;
+  categoryImage?: string;
 }
 
 const categorySchema = new mongoose.Schema(
@@ -21,6 +22,7 @@ const categorySchema = new mongoose.Schema(
     parentId: {
       type: String,
     },
+    categoryImage: { type: String },
   },
   { timestamps: true }
 );

@@ -57,7 +57,7 @@ const requiredUserAuth = (req, res, next) => {
   }
 };
 
-const uploadPictures = () => {
+const uploadPictures = (option: "array" | "single") => {
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, path.join(path.dirname(__dirname), "uploads"));
@@ -69,7 +69,11 @@ const uploadPictures = () => {
 
   const upload = multer({ storage });
 
-  return upload.array("productPictures");
+  if (option === "array") {
+    return upload.array("productPictures");
+  } else if (option === "single") {
+    return upload.single("categoryImage");
+  }
 };
 
 export { formValidators, formLoginValidators, validatedResult, requiredAdminAuth, requiredUserAuth, uploadPictures };
