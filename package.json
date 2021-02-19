@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/chltjdrhd777/start_making_ecommerce/issues"
   },
-  "homepage": "https://github.com/chltjdrhd777/start_making_ecommerce#readme"
+  "homepage": "https://github.com/chltjdrhd777/start_making_ecommerce#readme",
+  "dependencies": {
+    "concurrently": "^5.3.0"
+  }
 }

@@ -3,6 +3,8 @@ import { Nav, Navbar, Container } from "react-bootstrap";
 import { NavLink, Link } from "react-router-dom";
 
 export default function Header() {
+  const token = localStorage.getItem("token");
+
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -29,12 +31,13 @@ export default function Header() {
                 Register
               </NavLink>
             </li>
-
-            <li className="nav-item">
-              <NavLink to="/login" className="nav-link">
-                Login
-              </NavLink>
-            </li>
+            {!token && (
+              <li className="nav-item">
+                <NavLink to="/login" className="nav-link">
+                  Login
+                </NavLink>
+              </li>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

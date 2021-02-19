@@ -48,7 +48,8 @@ const login = (req: CustomUserRequest, res: Response) => {
       const token = jwt.sign({ _id: targetAdmin._id, role: targetAdmin.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
       targetAdmin.token = token;
       targetAdmin.save();
-      res.cookie("authorized_admin", token).status(200).json({ success: true, message: "login complete and token updated", targetAdmin });
+      //res.cookie("authorized_admin", token).status(200).json({ success: true, message: "login complete and token updated", targetAdmin });
+      res.status(200).json({ success: true, message: "login complete and token updated", targetAdmin });
     });
   });
 };

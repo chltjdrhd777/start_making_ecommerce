@@ -3,36 +3,27 @@ import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import Layout from "../../components/Layout/Layout";
 import Input from "../../components/UI/Input/Input";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../redux/userSlice";
-import axios from "../../axios/axios";
+import { loadingState, logins } from "../../redux/userSlice";
 import { useState } from "react";
 import { selectUser } from "../../redux/mainReducer";
+import { Redirect } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
-  console.log(user);
+  const { userInfo } = useSelector(selectUser);
 
   const userLogin = async (e?: any) => {
     e.preventDefault();
-
-    const res = await axios.post(
-      "/auth_admin/login",
-      {
-        email,
-        password,
-      },
-      { withCredentials: true }
-    );
-
-    if (res.status === 200) {
-      dispatch(login(res.data.targetAdmin));
-    }
+    dispatch(loadingState("pending"));
+    await dispatch(logins({ email, password }));
+    dispatch(loadingState("finished"));
+    setEmail("");
+    setPassword("");
   };
 
-  console.log(email, password);
+  if (userInfo?.token) return <Redirect to="/" />;
   return (
     <Layout>
       <Container>
