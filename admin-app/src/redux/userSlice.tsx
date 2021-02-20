@@ -8,9 +8,13 @@ export interface UserState {
     email: string;
     role: string;
     _id: string;
-    token: string;
+    token?: string;
   };
   loading: "ready" | "pending" | "finished" | "failed";
+  error: {
+    success: boolean;
+    errorInfo: any;
+  };
 }
 
 //async actions
@@ -23,11 +27,20 @@ export const logins = createAsyncThunk("users/loginRequest", async (payload: any
   }
 });
 
+export const userRegisters = createAsyncThunk("users/registerRequest", async (payload: any) => {
+  try {
+    const response = await axios.post("/auth/register", { ...payload });
+    return response;
+  } catch (err) {
+    return err.response;
+  }
+});
+
 //structure
 const user = createSlice({
   name: "user",
 
-  initialState: { userInfo: undefined, loading: "ready" } as UserState,
+  initialState: { userInfo: undefined, loading: "ready", error: { success: false, errorInfo: undefined } } as UserState,
 
   reducers: {
     loadingState: (state, { payload }) => {
@@ -39,8 +52,12 @@ const user = createSlice({
     logout: (state) => {
       state.userInfo = undefined;
     },
+    errorhandler: (state, { payload }) => {
+      state.error.success = payload;
+    },
   },
   extraReducers: (builder) => {
+    //login
     builder.addCase(logins.fulfilled, (state, { payload }) => {
       const { targetAdmin } = payload.data;
       if (payload.status === 400) {
@@ -64,10 +81,21 @@ const user = createSlice({
         };
       }
     });
+
+    //register
+    builder.addCase(userRegisters.fulfilled, (state, { payload }) => {
+      const { resData } = payload.data;
+      if (payload.status === 400 || !resData) {
+        state.error = { success: false, errorInfo: payload };
+      } else {
+        state.error = { success: true, errorInfo: {} };
+        state.userInfo = resData;
+      }
+    });
   },
 });
 
 export default user;
 
 //export actions
-export const { loadingState, login, logout } = user.actions;
+export const { loadingState, login, logout, errorhandler } = user.actions;

@@ -28,7 +28,8 @@ const register = (req: CustomUserRequest, res: Response) => {
     user.save().then((userdata) => {
       if (!userdata) return res.status(400).json({ success: false, message: "register failed" });
 
-      return res.status(201).json({ success: true, message: "ok register is done", userdata });
+      const resData = { role: userdata.role, email: userdata.email, _id: userdata._id };
+      return res.status(201).json({ success: true, message: "ok register is done", resData });
     });
   });
 };
