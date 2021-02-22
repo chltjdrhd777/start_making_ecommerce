@@ -5,18 +5,21 @@ import Login from "./routes/LogIn/Login";
 import Register from "./routes/Register/Register";
 import { login } from "./redux/userSlice";
 import { useDispatch } from "react-redux";
+import Products from "./routes/products/Products";
+import Orders from "./routes/orders/Orders";
+import axios from "axios";
 
 function App() {
   const token = localStorage.getItem("token");
-  const adminInfo = localStorage.getItem("adminInfo");
+  const userInfo = localStorage.getItem("userInfo");
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (token && adminInfo) {
+    if (token && userInfo) {
       dispatch(
         login({
           token,
-          ...JSON.parse(adminInfo!),
+          ...JSON.parse(userInfo!),
         })
       );
     }
@@ -29,6 +32,8 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
+          <Route path="/products" component={Products} />
+          <Route path="/orders" component={Orders} />
         </Switch>
       </Router>
     </div>

@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import User, { UserBaseDocumentType } from "../model/UserModel";
 import jwt from "jsonwebtoken";
 
-export interface CustomUserRequest extends Request<{}, {}, UserBaseDocumentType> {}
+export interface CustomUserRequest extends Request<{}, {}, UserBaseDocumentType> {
+  userData?: any;
+}
 
 const register = (req: CustomUserRequest, res: Response) => {
   User.findOne({ email: req.body.email }, null, null, (err, targetUser) => {
@@ -45,12 +47,22 @@ const login = (req: CustomUserRequest, res: Response) => {
     targetUser.authentification(req.body.password).then((isEqual) => {
       if (!isEqual) return res.status(400).json({ success: false, message: "wrong password" });
 
-      const token = jwt.sign({ _id: targetUser._id, role: targetUser.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign({ _id: targetUser._id, role: targetUser.role }, process.env.JWT_SECRET, { expiresIn: "1d" });
       targetUser.token = token;
       targetUser.save();
-      res.cookie("authorized_user", token).status(200).json({ success: true, message: "login complete and token updated" });
+      res.cookie("authorized_user", token).status(200).json({ success: true, message: "login complete and token updated", targetUser });
     });
   });
 };
 
-export { register, login };
+const logout = (req: CustomUserRequest, res: Response) => {
+  User.findOneAndUpdate({ _id: req.userData._id }, { $set: { token: "" } }, { new: true }, (err, doc) => {
+    if (err) return res.status(400).json({ err });
+    res.clearCookie("authorized_user");
+    res.status(200).json({ message: "successfully logged out", doc });
+  });
+};
+
+const userTokenEx = (req, res) => {};
+
+export { register, login, logout, userTokenEx };

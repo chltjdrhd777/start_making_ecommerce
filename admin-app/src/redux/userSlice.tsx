@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../axios/axios";
 
 //typeDef
@@ -18,12 +18,21 @@ export interface UserState {
 }
 
 //async actions
-export const logins = createAsyncThunk("users/loginRequest", async (payload: any) => {
+export const userLogins = createAsyncThunk("users/loginRequest", async (payload: any) => {
   try {
-    const response = await axios.post("/auth_admin/login", { ...payload }, { withCredentials: true });
+    const response = await axios.post("/auth/login", { ...payload }, { withCredentials: true });
     return response;
   } catch (err) {
     return err.response;
+  }
+});
+
+export const userLogouts = createAsyncThunk("/users/logoutReqeust", async (payload: any) => {
+  try {
+    const response = await axios.post("auth/logout", { ...payload }, { withCredentials: true });
+    return response;
+  } catch (err) {
+    return err.resposnse;
   }
 });
 
@@ -51,6 +60,7 @@ const user = createSlice({
     },
     logout: (state) => {
       state.userInfo = undefined;
+      localStorage.clear();
     },
     errorhandler: (state, { payload }) => {
       state.error.success = payload;
@@ -58,26 +68,26 @@ const user = createSlice({
   },
   extraReducers: (builder) => {
     //login
-    builder.addCase(logins.fulfilled, (state, { payload }) => {
-      const { targetAdmin } = payload.data;
+    builder.addCase(userLogins.fulfilled, (state, { payload }) => {
+      const { targetUser } = payload.data;
       if (payload.status === 400) {
-        console.log(payload);
+        state.error = { success: false, errorInfo: payload };
       } else {
-        localStorage.setItem("token", targetAdmin.token);
+        localStorage.setItem("token", targetUser.token);
         localStorage.setItem(
-          "adminInfo",
+          "userInfo",
           JSON.stringify({
-            email: targetAdmin.email,
-            role: targetAdmin.role,
-            _id: targetAdmin._id,
+            email: targetUser.email,
+            role: targetUser.role,
+            _id: targetUser._id,
           })
         );
 
         state.userInfo = {
-          email: targetAdmin.email,
-          role: targetAdmin.role,
-          _id: targetAdmin._id,
-          token: targetAdmin.token,
+          email: targetUser.email,
+          role: targetUser.role,
+          _id: targetUser._id,
+          token: targetUser.token,
         };
       }
     });
@@ -87,9 +97,20 @@ const user = createSlice({
       const { resData } = payload.data;
       if (payload.status === 400 || !resData) {
         state.error = { success: false, errorInfo: payload };
+        console.log(payload);
       } else {
         state.error = { success: true, errorInfo: {} };
         state.userInfo = resData;
+      }
+    });
+
+    //logout
+    builder.addCase(userLogouts.fulfilled, (state, { payload }) => {
+      if (payload.status === 400) {
+        console.log(payload);
+      } else {
+        state.userInfo = undefined;
+        localStorage.clear();
       }
     });
   },

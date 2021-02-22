@@ -3,7 +3,7 @@ import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import Layout from "../../components/Layout/Layout";
 import Input from "../../components/UI/Input/Input";
 import { useDispatch, useSelector } from "react-redux";
-import { loadingState, logins } from "../../redux/userSlice";
+import { loadingState, userLogins } from "../../redux/userSlice";
 import { useState } from "react";
 import { selectUser } from "../../redux/mainReducer";
 import { Redirect } from "react-router-dom";
@@ -14,10 +14,10 @@ export default function Login() {
   const dispatch = useDispatch();
   const { userInfo } = useSelector(selectUser);
 
-  const userLogin = async (e?: any) => {
+  const userLogin = (e?: any) => {
     e.preventDefault();
     dispatch(loadingState("pending"));
-    await dispatch(logins({ email, password }));
+    dispatch(userLogins({ email, password }));
     dispatch(loadingState("finished"));
     setEmail("");
     setPassword("");
