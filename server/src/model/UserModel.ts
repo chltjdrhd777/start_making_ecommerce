@@ -38,7 +38,6 @@ const userSchema: Schema<UserBaseDocumentType, UserStatics> = new mongoose.Schem
       type: String,
       trim: true,
       unique: true,
-      index: true,
       lowercase: true,
     },
     email: {

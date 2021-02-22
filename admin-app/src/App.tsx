@@ -7,7 +7,7 @@ import { login } from "./redux/userSlice";
 import { useDispatch } from "react-redux";
 import Products from "./routes/products/Products";
 import Orders from "./routes/orders/Orders";
-import axios from "axios";
+import Category from "./routes/Category/Category";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -33,6 +33,7 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/products" component={Products} />
+          <Route path="/category" component={Category} />
           <Route path="/orders" component={Orders} />
         </Switch>
       </Router>

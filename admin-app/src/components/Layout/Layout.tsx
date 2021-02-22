@@ -21,6 +21,9 @@ export default function Layout(props: PropsWithChildren<{ sidebar?: boolean }>) 
                     <NavLink to="/products">Products</NavLink>
                   </li>
                   <li>
+                    <NavLink to="/category">Category</NavLink>
+                  </li>
+                  <li>
                     <NavLink to="/orders">Orders</NavLink>
                   </li>
                 </ul>

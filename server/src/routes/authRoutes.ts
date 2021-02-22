@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { requiredUserAuth } from "../middleware/Validator";
-import { register, login, logout, userTokenEx } from "../controller/auth";
+import { register, login, logout } from "../controller/auth";
 
 const router = Router();
 
@@ -10,7 +10,5 @@ router.post("/register", register);
 router.post("/login", login);
 
 router.post("/logout", requiredUserAuth, logout);
-
-router.post("/userTokenEx", userTokenEx);
 
 export default router;

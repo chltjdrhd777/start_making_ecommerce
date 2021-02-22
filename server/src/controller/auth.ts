@@ -63,6 +63,4 @@ const logout = (req: CustomUserRequest, res: Response) => {
   });
 };
 
-const userTokenEx = (req, res) => {};
-
-export { register, login, logout, userTokenEx };
+export { register, login, logout };
