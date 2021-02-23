@@ -2,11 +2,11 @@ import React from "react";
 import { Form } from "react-bootstrap";
 
 interface InputProps {
-  label: string;
-  type: string;
-  placeholder: string;
-  value: string;
-  onChange: (e?: any) => any;
+  label?: string;
+  type?: string;
+  placeholder?: string;
+  value?: string;
+  onChange?: (e?: any) => any;
 }
 
 export default function Input({ label, type, placeholder, value, onChange }: InputProps) {

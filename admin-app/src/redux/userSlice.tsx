@@ -20,19 +20,32 @@ export interface UserState {
 //async actions
 export const userLogins = createAsyncThunk("users/loginRequest", async (payload: any) => {
   try {
-    const response = await axios.post("/auth/login", { ...payload }, { withCredentials: true });
-    return response;
+    if (payload.email === "admin@naver.com") {
+      const response = await axios.post("/auth_admin/login", { ...payload }, { withCredentials: true });
+      return response;
+    } else {
+      const response = await axios.post("/auth/login", { ...payload }, { withCredentials: true });
+      return response;
+    }
   } catch (err) {
     return err.response;
   }
 });
 
 export const userLogouts = createAsyncThunk("/users/logoutReqeust", async (payload: any) => {
+  const userInfo = localStorage.getItem("userInfo");
+  const rendered = JSON.parse(userInfo!);
+
   try {
-    const response = await axios.post("auth/logout", { ...payload }, { withCredentials: true });
-    return response;
+    if (rendered.email === "admin@naver.com") {
+      const response = await axios.post("auth_admin/logout", { ...payload }, { withCredentials: true });
+      return response;
+    } else {
+      const response = await axios.post("auth/logout", { ...payload }, { withCredentials: true });
+      return response;
+    }
   } catch (err) {
-    return err.resposnse;
+    return err.response;
   }
 });
 
@@ -70,25 +83,45 @@ const user = createSlice({
     //login
     builder.addCase(userLogins.fulfilled, (state, { payload }) => {
       const { targetUser } = payload.data;
+      const { targetAdmin } = payload.data;
       if (payload.status === 400) {
         state.error = { success: false, errorInfo: payload };
       } else {
-        localStorage.setItem("token", targetUser.token);
-        localStorage.setItem(
-          "userInfo",
-          JSON.stringify({
+        if (targetUser) {
+          localStorage.setItem("token", targetUser.token);
+          localStorage.setItem(
+            "userInfo",
+            JSON.stringify({
+              email: targetUser.email,
+              role: targetUser.role,
+              _id: targetUser._id,
+            })
+          );
+
+          state.userInfo = {
             email: targetUser.email,
             role: targetUser.role,
             _id: targetUser._id,
-          })
-        );
+            token: targetUser.token,
+          };
+        } else {
+          localStorage.setItem("token", targetAdmin.token);
+          localStorage.setItem(
+            "userInfo",
+            JSON.stringify({
+              email: targetAdmin.email,
+              role: targetAdmin.role,
+              _id: targetAdmin._id,
+            })
+          );
 
-        state.userInfo = {
-          email: targetUser.email,
-          role: targetUser.role,
-          _id: targetUser._id,
-          token: targetUser.token,
-        };
+          state.userInfo = {
+            email: targetAdmin.email,
+            role: targetAdmin.role,
+            _id: targetAdmin._id,
+            token: targetAdmin.token,
+          };
+        }
       }
     });
 

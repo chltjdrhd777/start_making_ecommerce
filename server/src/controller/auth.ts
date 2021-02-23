@@ -47,7 +47,7 @@ const login = (req: CustomUserRequest, res: Response) => {
     targetUser.authentification(req.body.password).then((isEqual) => {
       if (!isEqual) return res.status(400).json({ success: false, message: "wrong password" });
 
-      const token = jwt.sign({ _id: targetUser._id, role: targetUser.role }, process.env.JWT_SECRET, { expiresIn: "1d" });
+      const token = jwt.sign({ _id: targetUser._id, role: targetUser.role }, process.env.JWT_SECRET, { expiresIn: "3d" });
       targetUser.token = token;
       targetUser.save();
       res.cookie("authorized_user", token).status(200).json({ success: true, message: "login complete and token updated", targetUser });

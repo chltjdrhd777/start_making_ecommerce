@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import Admin, { UserBaseDocumentType } from "../model/UserModel";
 import jwt from "jsonwebtoken";
 
-export interface CustomUserRequest extends Request<{}, {}, UserBaseDocumentType> {}
+export interface CustomAdminRequest extends Request<{}, {}, UserBaseDocumentType> {
+  adminData: any;
+}
 
-const register = (req: CustomUserRequest, res: Response) => {
+const register = (req: CustomAdminRequest, res: Response) => {
   Admin.findOne({ email: req.body.email }, null, null, (err, targetAdmin) => {
     //conditions/////
     if (err)
@@ -34,7 +36,7 @@ const register = (req: CustomUserRequest, res: Response) => {
   });
 };
 
-const login = (req: CustomUserRequest, res: Response) => {
+const login = (req: CustomAdminRequest, res: Response) => {
   Admin.findOne({ email: req.body.email }, null, null, (err, targetAdmin) => {
     //conditions/////
     if (err) return res.status(400).json({ success: false, message: "cannot find admin" });
@@ -45,13 +47,20 @@ const login = (req: CustomUserRequest, res: Response) => {
     targetAdmin.authentification(req.body.password).then((isEqual) => {
       if (!isEqual) return res.status(400).json({ success: false, message: "wrong password" });
 
-      const token = jwt.sign({ _id: targetAdmin._id, role: targetAdmin.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign({ _id: targetAdmin._id, role: targetAdmin.role }, process.env.JWT_SECRET, { expiresIn: "3d" });
       targetAdmin.token = token;
       targetAdmin.save();
-      //res.cookie("authorized_admin", token).status(200).json({ success: true, message: "login complete and token updated", targetAdmin });
       res.cookie("authorized_admin", token).status(200).json({ success: true, message: "login complete and token updated", targetAdmin });
     });
   });
 };
 
-export { register, login };
+const adminLogout = (req: CustomAdminRequest, res: Response) => {
+  Admin.findOneAndUpdate({ _id: req.adminData._id }, { $set: { token: "" } }, { new: true }, (err, doc) => {
+    if (err) return res.status(400).json({ err });
+    res.clearCookie("authorized_admin");
+    res.status(200).json({ message: "successfully logged out", doc });
+  });
+};
+
+export { register, login, adminLogout };

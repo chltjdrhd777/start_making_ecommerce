@@ -53,6 +53,7 @@ const getCategory = (req: CustomCategorytRequest, res) => {
           _id: each._id,
           name: each.name,
           slug: each.slug,
+          parentId: each.parentId,
           children: makingCategoryTree(docs, each._id.toString()),
         });
       }
@@ -61,7 +62,7 @@ const getCategory = (req: CustomCategorytRequest, res) => {
     };
     const categoryList = makingCategoryTree(docs);
 
-    res.status(200).json({ success: true, docs, categoryList });
+    res.status(200).json({ success: true, categoryList });
   });
 };
 

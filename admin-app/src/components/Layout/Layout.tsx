@@ -15,7 +15,9 @@ export default function Layout(props: PropsWithChildren<{ sidebar?: boolean }>) 
               <Col md={2} className="sidebar">
                 <ul>
                   <li>
-                    <NavLink to="/">Home</NavLink>
+                    <NavLink exact to="/">
+                      Home
+                    </NavLink>
                   </li>
                   <li>
                     <NavLink to="/products">Products</NavLink>
@@ -48,8 +50,31 @@ const HomeMain = styled.main`
     bottom: 0;
     left: 0;
     background-color: #eee;
-    padding-top: 57px;
+    padding: 57px 0 0 0;
     box-shadow: inset 0 0 2px gray;
+
+    & ul {
+      margin: 0;
+      padding: 0;
+
+      & li {
+        list-style: none;
+
+        & a {
+          display: block;
+          color: #798183;
+          padding: 1rem 2rem;
+          box-sizing: border-box;
+          margin: 0.3rem 0 0.3rem 0.6rem;
+          text-decoration: none;
+          border-radius: 10px 0 0 0;
+
+          &.active {
+            background-color: #fff;
+          }
+        }
+      }
+    }
   }
 
   .main_contents {
