@@ -7,10 +7,12 @@ import { categoryLoading, createCategories, getAllCategories } from "../../redux
 import { selectCategory } from "../../redux/mainReducer";
 import { useState } from "react";
 import Input from "../../components/UI/Input/Input";
+import ModalMaker from "../../components/UI/modal/Modals";
 
 function Category() {
   const dispatch = useDispatch();
 
+  //for category rendering
   const [cateName, setCateName] = useState("");
   const [parentCateId, setParentCateId] = useState("");
   const [cateImg, setCateImg] = useState("");
@@ -42,12 +44,6 @@ function Category() {
     return options;
   };
 
-  useEffect(() => {
-    dispatch(categoryLoading("pending"));
-    dispatch(getAllCategories());
-    dispatch(categoryLoading("finished"));
-  }, []);
-
   //for modal
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -66,6 +62,36 @@ function Category() {
     setShow(false);
   };
 
+  const modalBody = () => {
+    return (
+      <>
+        <Input type="text" placeholder="category name" onChange={(e: any) => setCateName(e.target.value)} />
+        <select
+          className="form-control"
+          value={parentCateId}
+          onChange={(e: any) => {
+            setParentCateId(e.target.value);
+          }}
+        >
+          <option>select category</option>
+          {categoryList !== undefined &&
+            createCategoryList(categoryList).map((e) => (
+              <option key={e.value} value={e.value}>
+                {e.name}
+              </option>
+            ))}
+        </select>
+        <input
+          type="file"
+          name="categoryImage"
+          onChange={(e: any) => {
+            setCateImg(e.target.files[0]);
+          }}
+        />
+      </>
+    );
+  };
+
   return (
     <Layout sidebar>
       <Container>
@@ -82,7 +108,9 @@ function Category() {
         </Row>
       </Container>
 
-      <Modal show={show} onHide={handleClose} animation={false}>
+      <ModalMaker show={show} handleChanges={handleChanges} handleClose={handleClose} modalBody={modalBody} title="category" />
+
+      {/*   <Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>
           <Modal.Title>add new category</Modal.Title>
         </Modal.Header>
@@ -119,7 +147,7 @@ function Category() {
             Save Changes
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </Layout>
   );
 }

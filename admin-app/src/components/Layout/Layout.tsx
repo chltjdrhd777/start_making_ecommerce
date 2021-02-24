@@ -79,5 +79,6 @@ const HomeMain = styled.main`
 
   .main_contents {
     margin-left: auto;
+    padding: 57px 0 0 0;
   }
 `;

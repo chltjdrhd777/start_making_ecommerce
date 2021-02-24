@@ -6,7 +6,15 @@ import axios from "../axios/axios";
 export interface ProductState {}
 
 //async actions
-
+export const setProducts = createAsyncThunk("product/createProduct", async (payload: any) => {
+  try {
+    const response = await axios.post("/product/createProduct", payload, { withCredentials: true });
+    console.log(response);
+    /* return response; */
+  } catch (err) {
+    console.log(err.response);
+  }
+});
 //structure
 const product = createSlice({
   name: "product",

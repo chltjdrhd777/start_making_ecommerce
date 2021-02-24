@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Col, Container, Row, Modal, Button } from "react-bootstrap";
+import { Col, Container, Row, Modal, Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Layout from "../../components/Layout/Layout";
 import Input from "../../components/UI/Input/Input";
+import Modals from "../../components/UI/modal/Modals";
 import { categoryLoading, createCategories, getAllCategories } from "../../redux/categorySlice";
 import { selectCategory } from "../../redux/mainReducer";
+import { setProducts } from "../../redux/productSlice";
 import Category from "../Category/Category";
 
 function Products() {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   const dispatch = useDispatch();
+
+  //for category rendering
   const { categoryList } = useSelector(selectCategory).categories;
 
   const createCategoryList = (categories: any, options: any[] = []) => {
@@ -27,25 +27,73 @@ function Products() {
     return options;
   };
 
-  useEffect(() => {
-    dispatch(categoryLoading("pending"));
-    dispatch(getAllCategories());
-    dispatch(categoryLoading("finished"));
-  }, []);
+  //for products rendering
 
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [productPictures, setProductPictures] = useState([] as any[]);
-  const [parentCateId, setParentCateId] = useState("");
-
-  const handleChanges = () => {
-    setShow(false);
+  const tableRendering = () => {
+    return (
+      <Table responsive="sm">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Description</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+            <td>Table cell</td>
+          </tr>
+        </tbody>
+      </Table>
+    );
   };
 
-  console.log(productPictures);
+  //for modal
+
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [description, setDescription] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [quantity, setQuantity] = useState(0);
+  const [productPictures, setProductPictures] = useState([] as any[]);
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => {
+    setName("");
+    setPrice(0);
+    setDescription("");
+    setCategoryId("");
+    setQuantity(0);
+    setProductPictures([]);
+
+    setShow(false);
+  };
+  const handleShow = () => setShow(true);
+
+  const handleChanges = () => {
+    dispatch(categoryLoading("pending"));
+    const form = new FormData();
+
+    form.append("name", name);
+    form.append("price", price.toString().replace(/(^0+)/, ""));
+    form.append("description", description);
+    form.append("quantity", quantity.toString().replace(/(^0+)/, ""));
+    for (let pic of productPictures) {
+      form.append("productPictures", pic);
+    }
+    form.append("parentCateId", categoryId);
+    dispatch(setProducts(form));
+    handleClose();
+    dispatch(categoryLoading("finisihed"));
+  };
 
   const modalInputs = () => {
     return (
@@ -61,6 +109,7 @@ function Products() {
 
         <Input
           label="Price"
+          type="number"
           value={price}
           placeholder="price"
           onChange={(e: any) => {
@@ -79,6 +128,7 @@ function Products() {
 
         <Input
           label="Quantity"
+          type="number"
           value={quantity}
           placeholder="quantity"
           onChange={(e: any) => {
@@ -88,9 +138,9 @@ function Products() {
 
         <select
           className="form-control"
-          value={parentCateId}
+          value={categoryId}
           onChange={(e: any) => {
-            setParentCateId(e.target.value);
+            setCategoryId(e.target.value);
           }}
         >
           <option>select category</option>
@@ -132,9 +182,15 @@ function Products() {
             </ProductSection>
           </Col>
         </Row>
+
+        <Row>
+          <Col>{tableRendering()}</Col>
+        </Row>
       </Container>
 
-      <Modal show={show} onHide={handleClose} animation={false}>
+      <Modals show={show} handleChanges={handleChanges} handleClose={handleClose} modalBody={modalInputs} title="product" />
+
+      {/*  <Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>
           <Modal.Title>add new category</Modal.Title>
         </Modal.Header>
@@ -149,7 +205,7 @@ function Products() {
             Save Changes
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </Layout>
   );
 }

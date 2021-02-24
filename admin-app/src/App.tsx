@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import Products from "./routes/products/Products";
 import Orders from "./routes/orders/Orders";
 import Category from "./routes/Category/Category";
+import { categoryLoading, getAllCategories } from "./redux/categorySlice";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -23,6 +24,9 @@ function App() {
         })
       );
     }
+    dispatch(categoryLoading("pending"));
+    dispatch(getAllCategories());
+    dispatch(categoryLoading("finished"));
   }, []);
 
   return (

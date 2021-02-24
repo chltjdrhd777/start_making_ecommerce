@@ -51,7 +51,6 @@ const category = createSlice({
       } else {
         state.error = { success: true, errorInfo: undefined };
         state.categories = payload.data;
-        console.log(payload);
       }
     });
   },

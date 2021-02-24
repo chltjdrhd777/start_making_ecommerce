@@ -5,7 +5,7 @@ interface InputProps {
   label?: string;
   type?: string;
   placeholder?: string;
-  value?: string;
+  value?: string | number;
   onChange?: (e?: any) => any;
 }
 
