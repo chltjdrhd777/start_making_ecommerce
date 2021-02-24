@@ -89,7 +89,7 @@ function Products() {
     for (let pic of productPictures) {
       form.append("productPictures", pic);
     }
-    form.append("parentCateId", categoryId);
+    form.append("category", categoryId);
     dispatch(setProducts(form));
     handleClose();
     dispatch(categoryLoading("finisihed"));

@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import Admin, { UserBaseDocumentType } from "../model/UserModel";
 import jwt from "jsonwebtoken";
+import Category from "../model/category";
+import Product from "../model/product";
 
 export interface CustomAdminRequest extends Request<{}, {}, UserBaseDocumentType> {
   adminData: any;
@@ -63,4 +65,15 @@ const adminLogout = (req: CustomAdminRequest, res: Response) => {
   });
 };
 
-export { register, login, adminLogout };
+const getInitialData = async (req: Request, res: Response) => {
+  const categoryData = await Category.find({});
+
+  const productData = await Product.find({}).select("_id name category").populate("category");
+
+  res.status(200).json({
+    categoryData,
+    productData,
+  });
+};
+
+export { register, login, adminLogout, getInitialData };
