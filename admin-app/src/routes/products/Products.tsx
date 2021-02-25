@@ -152,11 +152,49 @@ function Products() {
   const handleProductChanges = () => {};
   const productModalBody = (productInfo: ProductBaseDocumentType) => {
     return (
-      <>
+      <ProductDetailModalSection>
         <Row>
-          <Col md={6}>{productInfo && productInfo.name}</Col>
+          <Col md={6}>
+            <label className="product_detail_key">Name</label>
+            <p className="product_detail_value">{productInfo.name}</p>
+          </Col>
+          <Col md={6}>
+            <label className="product_detail_key">Price</label>
+            <p className="product_detail_value">{productInfo.price}</p>
+          </Col>
         </Row>
-      </>
+
+        <Row>
+          <Col md={6}>
+            <label className="product_detail_key">Quantity</label>
+            <p className="product_detail_value">{productInfo.quantity}</p>
+          </Col>
+          <Col md={6}>
+            <label className="product_detail_key">Category</label>
+            <p className="product_detail_value">{productInfo.category && productInfo.category.name} </p>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col md={12}>
+            <label className="product_detail_key">Description</label>
+            <p className="product_detail_value">{productInfo.description}</p>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col style={{ display: "flex", flexDirection: "column" }}>
+            <label className="product_detail_key">Product Pictures</label>
+            <div>
+              {productInfo !== undefined &&
+                productInfo.productPictures !== undefined &&
+                productInfo.productPictures.map((productPic) => (
+                  <img key={productPic._id} src={`http://localhost:8080/public/${productPic.img}`} alt="" className="product_detail_img" />
+                ))}
+            </div>
+          </Col>
+        </Row>
+      </ProductDetailModalSection>
     );
   };
   console.log(productInfo);
@@ -195,7 +233,7 @@ function Products() {
                   <td>{product.price}</td>
                   <td>{product.quantity}</td>
                   <td>{product.description}</td>
-                  <td>{product.category}</td>
+                  <td>{product.category.name}</td>
                 </tr>
               );
             })}
@@ -248,6 +286,24 @@ const ProductDetailtable = styled.section`
     &:hover {
       background-color: #eee;
     }
+  }
+`;
+
+const ProductDetailModalSection = styled.section`
+  .product_detail_key {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .product_detail_value {
+    font-size: 1.2rem;
+  }
+
+  .product_detail_img {
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+    object-fit: cover;
   }
 `;
 

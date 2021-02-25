@@ -41,11 +41,18 @@ const createProduct = (req: CustomProductRequest, res: Response) => {
 };
 
 const getProduct = (req: Request, res: Response) => {
-  Product.find({}, (err, docs) => {
+  try {
+    Product.find({})
+      .populate("category", "_id name")
+      .then((result) => res.status(200).json({ success: true, productList: result }));
+  } catch (err) {
+    if (err) return res.status(400).json({ success: false, message: "bed request" });
+  }
+  /*   Product.find({}, (err, docs) => {
     if (err) return res.status(400).json({ success: false, message: "can't get product lists" });
 
     res.status(200).json({ success: true, productList: docs });
-  });
+  }); */
 };
 
 export { createProduct, getProduct };

@@ -7,11 +7,11 @@ export interface ProductBaseDocumentType extends Document {
   price: number;
   description: string;
   offer: number;
-  productPictures: { img: string }[];
+  productPictures: { img: string; _id: any }[];
   updatedAt: Date;
   createdBy: any;
   review: any;
-  category: any;
+  category: { _id: string; name: string };
   quantity: number;
 }
 
