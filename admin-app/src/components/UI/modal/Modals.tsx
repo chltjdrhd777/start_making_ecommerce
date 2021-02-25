@@ -9,11 +9,12 @@ interface PropType {
   title?: string;
   closeMeessage?: string;
   saveMessage?: string;
+  size?: "sm" | "lg" | "xl";
 }
 
-function Modals({ show, handleChanges, handleClose, modalBody, title, closeMeessage, saveMessage }: PropType) {
+function Modals({ show, handleChanges, handleClose, modalBody, title, closeMeessage, saveMessage, size }: PropType) {
   return (
-    <Modal show={show} onHide={handleClose} animation={false}>
+    <Modal show={show} onHide={handleClose} animation={true} size={size}>
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>

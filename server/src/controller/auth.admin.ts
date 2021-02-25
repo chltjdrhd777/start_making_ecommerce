@@ -65,15 +65,4 @@ const adminLogout = (req: CustomAdminRequest, res: Response) => {
   });
 };
 
-const getInitialData = async (req: Request, res: Response) => {
-  const categoryData = await Category.find({});
-
-  const productData = await Product.find({}).select("_id name category").populate("category");
-
-  res.status(200).json({
-    categoryData,
-    productData,
-  });
-};
-
-export { register, login, adminLogout, getInitialData };
+export { register, login, adminLogout };

@@ -2,18 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Col, Container, Row, Modal, Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import product from "../../../../server/src/model/product";
 import Layout from "../../components/Layout/Layout";
 import Input from "../../components/UI/Input/Input";
 import Modals from "../../components/UI/modal/Modals";
 import { categoryLoading, createCategories, getAllCategories } from "../../redux/categorySlice";
-import { selectCategory } from "../../redux/mainReducer";
+import { selectCategory, selectProduct } from "../../redux/mainReducer";
 import { setProducts } from "../../redux/productSlice";
-import Category from "../Category/Category";
+import { ProductBaseDocumentType } from "../../../../server/src/model/product";
 
 function Products() {
   const dispatch = useDispatch();
 
-  //for category rendering
+  //*for category rendering
   const { categoryList } = useSelector(selectCategory).categories;
 
   const createCategoryList = (categories: any, options: any[] = []) => {
@@ -27,46 +28,18 @@ function Products() {
     return options;
   };
 
-  //for products rendering
+  //*for modal
 
-  const tableRendering = () => {
-    return (
-      <Table responsive="sm">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Description</th>
-            <th>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-            <td>Table cell</td>
-          </tr>
-        </tbody>
-      </Table>
-    );
-  };
-
-  //for modal
-
+  //! 1. for add modal
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [productPictures, setProductPictures] = useState([] as any[]);
-  const [show, setShow] = useState(false);
+  const [addShow, setAddShow] = useState(false);
 
-  const handleClose = () => {
+  const handleAddClose = () => {
     setName("");
     setPrice(0);
     setDescription("");
@@ -74,11 +47,11 @@ function Products() {
     setQuantity(0);
     setProductPictures([]);
 
-    setShow(false);
+    setAddShow(false);
   };
-  const handleShow = () => setShow(true);
+  const handleAddShow = () => setAddShow(true);
 
-  const handleChanges = () => {
+  const handleAddChanges = () => {
     dispatch(categoryLoading("pending"));
     const form = new FormData();
 
@@ -91,11 +64,11 @@ function Products() {
     }
     form.append("category", categoryId);
     dispatch(setProducts(form));
-    handleClose();
+    handleAddClose();
     dispatch(categoryLoading("finisihed"));
   };
 
-  const modalInputs = () => {
+  const addModalBody = () => {
     return (
       <>
         <Input
@@ -171,6 +144,66 @@ function Products() {
     );
   };
 
+  //! 2. for productModal
+  const [productShow, setProductShow] = useState(false);
+  const [productInfo, setProductInfo] = useState({} as ProductBaseDocumentType);
+  const handleProductShow = () => setProductShow(true);
+  const handleProductClose = () => setProductShow(false);
+  const handleProductChanges = () => {};
+  const productModalBody = (productInfo: ProductBaseDocumentType) => {
+    return (
+      <>
+        <Row>
+          <Col md={6}>{productInfo && productInfo.name}</Col>
+        </Row>
+      </>
+    );
+  };
+  console.log(productInfo);
+
+  //* for table rendering
+  const { productList } = useSelector(selectProduct).products;
+
+  const tableRendering = () => {
+    return (
+      <Table responsive="sm">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Description</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          {productList !== undefined &&
+            productList.map((product, index) => {
+              return (
+                <tr
+                  key={product._id}
+                  onClick={() => {
+                    handleProductShow();
+
+                    setProductInfo(product);
+                  }}
+                  className="product_tableRows"
+                >
+                  <td>{index + 1}</td>
+                  <td>{product.name}</td>
+                  <td>{product.price}</td>
+                  <td>{product.quantity}</td>
+                  <td>{product.description}</td>
+                  <td>{product.category}</td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </Table>
+    );
+  };
+
   return (
     <Layout sidebar>
       <Container>
@@ -178,34 +211,27 @@ function Products() {
           <Col md={12}>
             <ProductSection>
               <h3>Product</h3>
-              <button onClick={handleShow}>add</button>
+              <button onClick={handleAddShow}>add</button>
             </ProductSection>
           </Col>
         </Row>
 
         <Row>
-          <Col>{tableRendering()}</Col>
+          <Col md={12}>
+            <ProductDetailtable>{tableRendering()}</ProductDetailtable>
+          </Col>
         </Row>
       </Container>
 
-      <Modals show={show} handleChanges={handleChanges} handleClose={handleClose} modalBody={modalInputs} title="product" />
-
-      {/*  <Modal show={show} onHide={handleClose} animation={false}>
-        <Modal.Header closeButton>
-          <Modal.Title>add new category</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>{modalInputs()}</Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleChanges}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
+      <Modals show={addShow} handleChanges={handleAddChanges} handleClose={handleAddClose} modalBody={addModalBody} title="product" />
+      <Modals
+        show={productShow}
+        handleChanges={handleProductChanges}
+        handleClose={handleProductClose}
+        modalBody={() => productModalBody(productInfo)}
+        title="product detail"
+        size="lg"
+      />
     </Layout>
   );
 }
@@ -213,6 +239,16 @@ function Products() {
 const ProductSection = styled.section`
   display: flex;
   justify-content: space-between;
+`;
+
+const ProductDetailtable = styled.section`
+  .product_tableRows {
+    cursor: pointer;
+    font-size: small;
+    &:hover {
+      background-color: #eee;
+    }
+  }
 `;
 
 export default Products;

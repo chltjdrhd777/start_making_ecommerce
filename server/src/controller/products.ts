@@ -40,4 +40,12 @@ const createProduct = (req: CustomProductRequest, res: Response) => {
   });
 };
 
-export { createProduct };
+const getProduct = (req: Request, res: Response) => {
+  Product.find({}, (err, docs) => {
+    if (err) return res.status(400).json({ success: false, message: "can't get product lists" });
+
+    res.status(200).json({ success: true, productList: docs });
+  });
+};
+
+export { createProduct, getProduct };

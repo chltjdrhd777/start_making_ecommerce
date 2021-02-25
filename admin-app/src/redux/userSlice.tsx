@@ -144,6 +144,7 @@ const user = createSlice({
       } else {
         state.userInfo = undefined;
         localStorage.clear();
+        window.location.href = "/";
       }
     });
   },

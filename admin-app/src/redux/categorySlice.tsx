@@ -15,7 +15,7 @@ export interface CategoryState {
 //async actions
 export const getAllCategories = createAsyncThunk("category/getCategories", async () => {
   try {
-    const response = await axios.get("/category/getCategory");
+    const response = await axios.post("/category/getCategory", undefined, { withCredentials: true });
     return response;
   } catch (err) {
     return err.response;

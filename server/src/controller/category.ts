@@ -34,7 +34,7 @@ const createCategory = (req: CustomCategorytRequest, res) => {
   });
 };
 
-const getCategory = (req: CustomCategorytRequest, res) => {
+const getCategory = (req, res) => {
   Category.find({}, (err, docs) => {
     if (err) return res.status(400).json({ err });
 

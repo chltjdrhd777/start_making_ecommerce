@@ -3,8 +3,12 @@ import { Container, Row, Col } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import Header from "../Header/Header";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/mainReducer";
 
 export default function Layout(props: PropsWithChildren<{ sidebar?: boolean }>) {
+  const { userInfo } = useSelector(selectUser);
+
   return (
     <>
       <Header />
@@ -19,12 +23,17 @@ export default function Layout(props: PropsWithChildren<{ sidebar?: boolean }>) 
                       Home
                     </NavLink>
                   </li>
-                  <li>
-                    <NavLink to="/products">Products</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/category">Category</NavLink>
-                  </li>
+                  {userInfo !== undefined && userInfo.role === "admin" && (
+                    <>
+                      <li>
+                        <NavLink to="/products">Products</NavLink>
+                      </li>
+                      <li>
+                        <NavLink to="/category">Category</NavLink>
+                      </li>
+                    </>
+                  )}
+
                   <li>
                     <NavLink to="/orders">Orders</NavLink>
                   </li>
