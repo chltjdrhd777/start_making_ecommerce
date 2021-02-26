@@ -5,6 +5,6 @@ import { requiredAdminAuth, uploadPictures } from "../middleware/Validator";
 const router = Router();
 
 router.post("/createCategory", requiredAdminAuth, uploadPictures("single"), createCategory);
-router.post("/getCategory", requiredAdminAuth, getCategory);
+router.get("/getCategory", getCategory);
 
 export default router;

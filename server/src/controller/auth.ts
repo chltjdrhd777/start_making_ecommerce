@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User, { UserBaseDocumentType } from "../model/UserModel";
 import jwt from "jsonwebtoken";
+import shortid from "shortid";
 
 export interface CustomUserRequest extends Request<{}, {}, UserBaseDocumentType> {
   userData?: any;
@@ -24,7 +25,7 @@ const register = (req: CustomUserRequest, res: Response) => {
       lastName,
       email,
       password,
-      profileName,
+      profileName: shortid.generate(),
     });
 
     user.save().then((userdata) => {

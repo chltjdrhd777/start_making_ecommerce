@@ -60,6 +60,8 @@ function Category() {
 
     dispatch(categoryLoading("finisihed"));
     setShow(false);
+
+    window.location.reload();
   };
 
   const modalBody = () => {

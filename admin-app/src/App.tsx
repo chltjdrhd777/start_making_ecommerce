@@ -9,15 +9,20 @@ import Products from "./routes/products/Products";
 import Orders from "./routes/orders/Orders";
 import Category from "./routes/Category/Category";
 import { categoryLoading, getAllCategories } from "./redux/categorySlice";
-import { getAllProducts } from "./redux/productSlice";
-import { selectUser } from "./redux/mainReducer";
+import product, { getAllProducts } from "./redux/productSlice";
+import { selectCategory, selectProduct } from "./redux/mainReducer";
 
 function App() {
   const token = localStorage.getItem("token");
   const localUserInfo = localStorage.getItem("userInfo");
   const dispatch = useDispatch();
-
-  const { userInfo } = useSelector(selectUser);
+  /*  const {
+    categories: { categoryList },
+  } = useSelector(selectCategory);
+  const {
+    products: { productList },
+  } = useSelector(selectProduct);
+ */
   useEffect(() => {
     if (token && localUserInfo) {
       dispatch(
@@ -27,16 +32,12 @@ function App() {
         })
       );
     }
-  }, []);
 
-  useEffect(() => {
-    if (userInfo && userInfo.role === "admin") {
-      dispatch(categoryLoading("pending"));
-      dispatch(getAllCategories());
-      dispatch(getAllProducts());
-      dispatch(categoryLoading("finished"));
-    }
-  }, [userInfo]);
+    dispatch(categoryLoading("pending"));
+    dispatch(getAllCategories());
+    dispatch(getAllProducts());
+    dispatch(categoryLoading("finished"));
+  }, []);
 
   return (
     <div className="App">

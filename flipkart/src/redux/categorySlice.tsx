@@ -22,15 +22,6 @@ export const getAllCategories = createAsyncThunk("category/getCategories", async
   }
 });
 
-export const createCategories = createAsyncThunk("category/createCategory", async (payload: any) => {
-  try {
-    const response = await axios.post("/category/createCategory", payload, { withCredentials: true });
-    console.log(response);
-  } catch (err) {
-    return err.response;
-  }
-});
-
 //structure
 const category = createSlice({
   name: "category",

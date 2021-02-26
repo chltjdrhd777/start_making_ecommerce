@@ -1,8 +1,7 @@
+import shortid from "shortid";
 import { Request, Response } from "express";
 import Admin, { UserBaseDocumentType } from "../model/UserModel";
 import jwt from "jsonwebtoken";
-import Category from "../model/category";
-import Product from "../model/product";
 
 export interface CustomAdminRequest extends Request<{}, {}, UserBaseDocumentType> {
   adminData: any;
@@ -26,7 +25,7 @@ const register = (req: CustomAdminRequest, res: Response) => {
       lastName,
       email,
       password,
-      profileName,
+      profileName: shortid.generate(),
       role: "admin",
     });
 

@@ -6,6 +6,6 @@ const router = Router();
 
 router.post("/createProduct", requiredAdminAuth, uploadPictures("array"), createProduct);
 
-router.post("/getProduct", requiredAdminAuth, getProduct);
+router.get("/getProduct", getProduct);
 
 export default router;

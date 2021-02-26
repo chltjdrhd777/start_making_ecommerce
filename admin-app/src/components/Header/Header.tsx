@@ -53,7 +53,7 @@ export default function Header() {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mr-auto"></Nav>
-          {userInfo ? ifLoggedIn() : ifLoggedOut()}
+          {userInfo && userInfo.token ? ifLoggedIn() : ifLoggedOut()}
         </Navbar.Collapse>
       </Container>
     </Navbar>
