@@ -1,13 +1,10 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { PropsWithChildren } from "react";
 import styled from "styled-components/macro";
-import {} from "redux/";
+import { useSelector, useDispatch } from "react-redux";
 import { selectCategory } from "redux/mainReducer";
 
-function SubMenues() {
+function Header(props: PropsWithChildren<{}>) {
   const { categories } = useSelector(selectCategory);
-  console.log(categories);
-
   const renderCategory = (categoryList: any[]) => {
     let renderedCategory = [];
     for (let category of categoryList) {
@@ -24,11 +21,21 @@ function SubMenues() {
   };
 
   return (
-    <SubMenueNav>
-      <ul>{categories.categoryList !== undefined && categories.categoryList.length > 0 && renderCategory(categories.categoryList)}</ul>
-    </SubMenueNav>
+    <>
+      <Headerheader>header</Headerheader>
+      <SubMenueNav>
+        <ul>{categories.categoryList !== undefined && categories.categoryList.length > 0 && renderCategory(categories.categoryList)}</ul>
+      </SubMenueNav>
+      {props.children}
+    </>
   );
 }
+
+const Headerheader = styled.header`
+  width: 100%;
+  height: 70px;
+  background-color: #a8c9ff;
+`;
 
 //article = menuheader
 const SubMenueNav = styled.nav`
@@ -96,4 +103,4 @@ const SubMenueNav = styled.nav`
   }
 `;
 
-export default SubMenues;
+export default Header;

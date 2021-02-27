@@ -51,7 +51,11 @@ const login = (req: CustomUserRequest, res: Response) => {
       const token = jwt.sign({ _id: targetUser._id, role: targetUser.role }, process.env.JWT_SECRET, { expiresIn: "3d" });
       targetUser.token = token;
       targetUser.save();
-      res.cookie("authorized_user", token).status(200).json({ success: true, message: "login complete and token updated", targetUser });
+      let expireDate = new Date(Date.now() + 60 * 60 * 1000 * 24 * 3);
+      res
+        .cookie("authorized_user", token, { expires: expireDate })
+        .status(200)
+        .json({ success: true, message: "login complete and token updated", targetUser });
     });
   });
 };

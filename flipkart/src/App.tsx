@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Home from "./components/Hompage/Hompage";
-import Header from "./components/Header/Header";
-import SubMenues from "./components/Header/SubMenues";
+import Home from "./routes/Home";
 import { categoryLoading, getAllCategories } from "./redux/categorySlice";
-import { selectCategory } from "./redux/mainReducer";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import ProductList from "routes/ProductList";
+import { getProductBySlug } from "redux/productslice";
 
 function App() {
   const dispatch = useDispatch();
@@ -16,10 +16,18 @@ function App() {
 
   return (
     <div className="App">
-      <>
-        <Header />
-        <SubMenues />
-      </>
+      <Router>
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route
+            path="/testpage"
+            component={(props: any) => {
+              return <div>testpage</div>;
+            }}
+          />
+          <Route path="/:slug" component={ProductList} />
+        </Switch>
+      </Router>
     </div>
   );
 }

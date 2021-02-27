@@ -51,7 +51,11 @@ const login = (req: CustomAdminRequest, res: Response) => {
       const token = jwt.sign({ _id: targetAdmin._id, role: targetAdmin.role }, process.env.JWT_SECRET, { expiresIn: "3d" });
       targetAdmin.token = token;
       targetAdmin.save();
-      res.cookie("authorized_admin", token).status(200).json({ success: true, message: "login complete and token updated", targetAdmin });
+      let expireDate = new Date(Date.now() + 60 * 60 * 1000 * 24 * 3);
+      res
+        .cookie("authorized_admin", token, { expires: expireDate })
+        .status(200)
+        .json({ success: true, message: "login complete and token updated", targetAdmin });
     });
   });
 };

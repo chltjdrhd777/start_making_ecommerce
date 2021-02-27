@@ -3,6 +3,7 @@ import slugify from "slugify";
 import { ProductBaseDocumentType } from "../model/product";
 import { Request, Response } from "express";
 import Product from "../model/product";
+import Category from "../model/category";
 
 export interface CustomProductRequest extends Request<{}, {}, ProductBaseDocumentType> {
   adminData: UserBaseDocumentType;
@@ -55,4 +56,43 @@ const getProduct = (req: Request, res: Response) => {
   }); */
 };
 
-export { createProduct, getProduct };
+const getProductBySlug = (req: Request, res: Response) => {
+  const { slug } = req.params;
+
+  Category.findOne({ slug: slug })
+    .select("_id")
+    .exec((err, target) => {
+      if (err) return res.status(400).json({ err });
+
+      if (target) {
+        Product.find({ category: target._id }, undefined, undefined, (err, docs) => {
+          if (err) res.status(400).json({ err });
+
+          if (docs.length !== undefined && docs.length > 0) {
+            const productByPrice = {
+              under10: docs.filter((doc) => {
+                const renderedPrice = parseInt(doc.price.split(",")[0]);
+                return renderedPrice <= 10;
+              }),
+              is10to15: docs.filter((doc) => {
+                const renderedPrice = parseInt(doc.price.split(",")[0]);
+                return renderedPrice > 10 && renderedPrice <= 15;
+              }),
+              is15to20: docs.filter((doc) => {
+                const renderedPrice = parseInt(doc.price.split(",")[0]);
+                return renderedPrice > 15 && renderedPrice <= 20;
+              }),
+              over20: docs.filter((doc) => {
+                const renderedPrice = parseInt(doc.price.split(",")[0]);
+                return renderedPrice > 20;
+              }),
+            };
+
+            res.status(200).json({ docs, productByPrice });
+          }
+        });
+      }
+    });
+};
+
+export { createProduct, getProduct, getProductBySlug };

@@ -4,7 +4,7 @@ import mongoose, { Document, Schema, Model } from "mongoose";
 export interface ProductBaseDocumentType extends Document {
   name: string;
   slug: string;
-  price: number;
+  price: string;
   description: string;
   offer: number;
   productPictures: { img: string; _id: any }[];
@@ -31,7 +31,7 @@ const productSchema: Schema<ProductBaseDocumentType, ProductStatics> = new mongo
       unique: true,
     },
     price: {
-      type: Number,
+      type: String,
     },
     description: {
       type: String,

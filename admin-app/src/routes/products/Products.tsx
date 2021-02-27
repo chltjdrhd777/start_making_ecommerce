@@ -32,7 +32,7 @@ function Products() {
 
   //! 1. for add modal
   const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [quantity, setQuantity] = useState(0);
@@ -41,7 +41,7 @@ function Products() {
 
   const handleAddClose = () => {
     setName("");
-    setPrice(0);
+    setPrice("");
     setDescription("");
     setCategoryId("");
     setQuantity(0);
@@ -52,20 +52,27 @@ function Products() {
   const handleAddShow = () => setAddShow(true);
 
   const handleAddChanges = () => {
-    dispatch(categoryLoading("pending"));
-    const form = new FormData();
+    if (parseInt(price[0]).toString() === "NaN") {
+      console.log("not number");
+    } else {
+      dispatch(categoryLoading("pending"));
+      const form = new FormData();
 
-    form.append("name", name);
-    form.append("price", price.toString().replace(/(^0+)/, ""));
-    form.append("description", description);
-    form.append("quantity", quantity.toString().replace(/(^0+)/, ""));
-    for (let pic of productPictures) {
-      form.append("productPictures", pic);
+      form.append("name", name);
+      form.append("price", price);
+
+      form.append("description", description);
+      form.append("quantity", quantity.toString().replace(/(^0+)/, ""));
+      for (let pic of productPictures) {
+        form.append("productPictures", pic);
+      }
+      form.append("category", categoryId);
+
+      dispatch(setProducts(form));
+      handleAddClose();
+      dispatch(categoryLoading("finisihed"));
+      window.location.reload();
     }
-    form.append("category", categoryId);
-    dispatch(setProducts(form));
-    handleAddClose();
-    dispatch(categoryLoading("finisihed"));
   };
 
   const addModalBody = () => {
@@ -82,7 +89,7 @@ function Products() {
 
         <Input
           label="Price"
-          type="number"
+          type="text"
           value={price}
           placeholder="price"
           onChange={(e: any) => {
@@ -136,8 +143,9 @@ function Products() {
         <input
           type="file"
           name="productPictures"
+          multiple
           onChange={(e: any) => {
-            setProductPictures([...productPictures, e.target.files[0]]);
+            setProductPictures([...productPictures, ...e.target.files]);
           }}
         />
       </>
@@ -197,7 +205,6 @@ function Products() {
       </ProductDetailModalSection>
     );
   };
-  console.log(productInfo);
 
   //* for table rendering
   const { productList } = useSelector(selectProduct).products;
