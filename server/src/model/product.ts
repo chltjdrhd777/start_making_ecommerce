@@ -15,7 +15,9 @@ export interface ProductBaseDocumentType extends Document {
   quantity: number;
 }
 
-interface ProductStatics extends Model<ProductBaseDocumentType> {}
+interface ProductStatics extends Model<ProductBaseDocumentType> {
+  generatePublicURL: (query: string) => string;
+}
 
 //Schema
 const productSchema: Schema<ProductBaseDocumentType, ProductStatics> = new mongoose.Schema(
@@ -52,7 +54,11 @@ const productSchema: Schema<ProductBaseDocumentType, ProductStatics> = new mongo
 
 //pre
 
-//methods
+//methods and statics
+
+productSchema.statics.generatePublicURL = function (query: string) {
+  return `http://localhost:8080/${query}`;
+};
 
 //export
 export default mongoose.model<ProductBaseDocumentType, ProductStatics>("Product", productSchema);

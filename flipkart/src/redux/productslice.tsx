@@ -3,16 +3,27 @@ import axios from "../axios/axios";
 import { ProductBaseDocumentType } from "../../../server/src/model/product";
 //typeDef
 
-export interface ProductState {
-  products: {
-    docs: ProductBaseDocumentType[];
-    productByPrice: {
-      under10: ProductBaseDocumentType[];
-      is10to15: ProductBaseDocumentType[];
-      is15to20: ProductBaseDocumentType[];
-      over20: ProductBaseDocumentType[];
-    };
+export interface ProductsType {
+  docs: ProductBaseDocumentType[];
+  productByPrice:
+    | {
+        under10: ProductBaseDocumentType[];
+        is10to15: ProductBaseDocumentType[];
+        is15to20: ProductBaseDocumentType[];
+        over20: ProductBaseDocumentType[];
+      }
+    | any;
+}
+
+export interface ProductsType2 {
+  docs: ProductBaseDocumentType[];
+  productByPrice: {
+    [key: string]: ProductBaseDocumentType[];
   };
+}
+
+export interface ProductState {
+  products: ProductsType2;
   loading: "ready" | "pending" | "finished" | "failed";
   error: {
     success: boolean;
@@ -24,7 +35,7 @@ export interface ProductState {
 export const getProductBySlug = createAsyncThunk("product/getProductBySlug", async (slug: any) => {
   try {
     const response = await axios.get(`product/${slug}`);
-    console.log(response);
+    return response;
   } catch (err) {
     return err.response;
   }
@@ -42,17 +53,16 @@ const product = createSlice({
     },
   },
 
-  /* extraReducers: (builder) => {
-    //login
-    builder.addCase(getAllCategories.fulfilled, (state, { payload }) => {
+  extraReducers: (builder) => {
+    builder.addCase(getProductBySlug.fulfilled, (state, { payload }) => {
       if (payload.status === 400) {
         state.error = { success: false, errorInfo: payload };
       } else {
         state.error = { success: true, errorInfo: undefined };
-        state.categories = payload.data;
+        state.products = payload.data;
       }
     });
-  }, */
+  },
 });
 
 export default product;
