@@ -3,8 +3,16 @@ import axios from "../axios/axios";
 
 //typeDef
 
+export interface CategoryListType {
+  _id: string;
+  name: string;
+  slug: string;
+  parentId?: string;
+  children: CategoryListType[];
+}
+
 export interface CategoryState {
-  categories: { categoryList: []; docs: []; success: boolean };
+  categories: { categoryList: CategoryListType[]; docs: []; success: boolean };
   loading: "ready" | "pending" | "finished" | "failed";
   error: {
     success: boolean;

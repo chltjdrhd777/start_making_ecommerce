@@ -4,7 +4,7 @@ import Admin, { UserBaseDocumentType } from "../model/UserModel";
 import jwt from "jsonwebtoken";
 
 export interface CustomAdminRequest extends Request<{}, {}, UserBaseDocumentType> {
-  adminData: any;
+  adminData?: any;
 }
 
 const register = (req: CustomAdminRequest, res: Response) => {

@@ -1,7 +1,7 @@
 import { check, validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import User from "../model/UserModel";
-import { Request } from "express";
+import { Request, Response } from "express";
 import multer from "multer";
 import shortid from "shortid";
 import path from "path";
@@ -42,6 +42,18 @@ const requiredAdminAuth = (req, res, next) => {
   }
 };
 
+const tokenVerificationCheck = (req: Request, res: Response) => {
+  const tokenName = req.body.tokenName;
+  const tokenValue = req.body.tokenValue;
+  const verifiedCheck = jwt.verify(tokenValue, process.env.JWT_SECRET);
+
+  if (!tokenValue || !verifiedCheck) {
+    res.clearCookie(tokenName);
+  } else {
+    res.json({ message: "your token is alive" });
+  }
+};
+
 const requiredUserAuth = (req, res, next) => {
   const token = req.cookies.authorized_user;
   const verifiedCheck: any = jwt.verify(token, process.env.JWT_SECRET);
@@ -76,4 +88,4 @@ const uploadPictures = (option: "array" | "single") => {
   }
 };
 
-export { formValidators, formLoginValidators, validatedResult, requiredAdminAuth, requiredUserAuth, uploadPictures };
+export { formValidators, formLoginValidators, validatedResult, requiredAdminAuth, requiredUserAuth, uploadPictures, tokenVerificationCheck };

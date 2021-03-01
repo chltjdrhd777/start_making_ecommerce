@@ -3,11 +3,13 @@ import { Col, Container, Row, Modal, Button } from "react-bootstrap";
 import Layout from "../../components/Layout/Layout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { categoryLoading, createCategories, getAllCategories } from "../../redux/categorySlice";
+import { CategoryListType, categoryLoading, createCategories, getAllCategories } from "../../redux/categorySlice";
 import { selectCategory } from "../../redux/mainReducer";
 import { useState } from "react";
 import Input from "../../components/UI/Input/Input";
 import ModalMaker from "../../components/UI/modal/Modals";
+import CheckboxTree, { Node } from "react-checkbox-tree";
+import "react-checkbox-tree/lib/react-checkbox-tree.css";
 
 function Category() {
   const dispatch = useDispatch();
@@ -18,20 +20,26 @@ function Category() {
   const [cateImg, setCateImg] = useState("");
 
   const { categoryList } = useSelector(selectCategory).categories;
+  console.log(typeof categoryList);
 
-  const renderCategory = (categoryList: any[]) => {
-    let renderedCategory = [];
-    for (let category of categoryList) {
-      renderedCategory.push(
-        <li key={category._id}>
-          {category.name}
-          {category.children.length > 0 && <ul>{renderCategory(category.children)}</ul>}
-        </li>
-      );
+  interface RenderedCategoryReturnType extends Node {}
+  type RenederedCategoryType = (categoryList: CategoryListType[]) => RenderedCategoryReturnType[];
+
+  const renderCategory: RenederedCategoryType = (categoryList) => {
+    let renderedCategory: Node[] = [];
+    if (categoryList) {
+      for (let category of categoryList) {
+        renderedCategory.push({
+          label: category.name,
+          value: category._id,
+          children: renderCategory(category.children),
+        });
+      }
     }
 
     return renderedCategory;
   };
+  console.log(renderCategory(categoryList));
 
   const createCategoryList = (categories: any, options: any[] = []) => {
     for (let category of categories) {
@@ -63,6 +71,10 @@ function Category() {
 
     window.location.reload();
   };
+
+  //for react-check-box
+  const [checked, setChecked] = useState([] as any[]);
+  const [expanded, setExpanded] = useState([] as any[]);
 
   const modalBody = () => {
     return (
@@ -106,7 +118,16 @@ function Category() {
           </Col>
         </Row>
         <Row>
-          <Col md={12}>{categoryList !== undefined && renderCategory(categoryList)}</Col>
+          <Col md={12}>
+            {/* {categoryList !== undefined && renderCategory(categoryList)} */}
+            <CheckboxTree
+              nodes={renderCategory(categoryList)}
+              checked={checked}
+              expanded={expanded}
+              onCheck={(checked) => setChecked(checked)}
+              onExpand={(expanded) => setExpanded(expanded)}
+            />
+          </Col>
         </Row>
       </Container>
 
