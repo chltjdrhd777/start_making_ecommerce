@@ -3,7 +3,7 @@ import { Col, Container, Row, Modal, Button } from "react-bootstrap";
 import Layout from "../../components/Layout/Layout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { CategoryListType, categoryLoading, createCategories, getAllCategories } from "../../redux/categorySlice";
+import { CategoryListType, categoryLoading, createCategories, getAllCategories, updateCategory } from "../../redux/categorySlice";
 import { selectCategory } from "../../redux/mainReducer";
 import { useState } from "react";
 import Input from "../../components/UI/Input/Input";
@@ -142,6 +142,15 @@ function Category() {
 
   const handleUpdateChanges = () => {
     dispatch(categoryLoading("pending"));
+    const form = new FormData();
+
+    for (let eachCate of expandedArrForshowing) {
+      form.append("_id", eachCate.value);
+      form.append("name", eachCate.name);
+      form.append("parentId", eachCate.parentId ? eachCate.parentId : "");
+    }
+
+    dispatch(updateCategory(form));
     setUpdateShow(false);
     dispatch(categoryLoading("finisihed"));
   };
