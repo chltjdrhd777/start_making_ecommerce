@@ -10,6 +10,7 @@ import Input from "../../components/UI/Input/Input";
 import ModalMaker from "../../components/UI/modal/Modals";
 import CheckboxTree, { Node } from "react-checkbox-tree";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
+import { IoIosCheckbox, IoIosCheckboxOutline, IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
 
 function Category() {
   const dispatch = useDispatch();
@@ -20,7 +21,6 @@ function Category() {
   const [cateImg, setCateImg] = useState("");
 
   const { categoryList } = useSelector(selectCategory).categories;
-  console.log(typeof categoryList);
 
   interface RenderedCategoryReturnType extends Node {}
   type RenederedCategoryType = (categoryList: CategoryListType[]) => RenderedCategoryReturnType[];
@@ -29,21 +29,29 @@ function Category() {
     let renderedCategory: Node[] = [];
     if (categoryList) {
       for (let category of categoryList) {
+        const childrenForm = (category: CategoryListType) => {
+          if (renderCategory(category.children).length > 0) {
+            return renderCategory(category.children);
+          } else {
+            return undefined;
+          }
+        };
+
         renderedCategory.push({
-          label: category.name,
           value: category._id,
-          children: renderCategory(category.children),
+          label: category.name,
+
+          children: childrenForm(category),
         });
       }
     }
 
     return renderedCategory;
   };
-  console.log(renderCategory(categoryList));
 
   const createCategoryList = (categories: any, options: any[] = []) => {
     for (let category of categories) {
-      options.push({ value: category._id, name: category.name });
+      options.push({ value: category._id, name: category.name, parentId: category.parentId });
       if (category.children.length > 0) {
         createCategoryList(category.children, options);
       }
@@ -75,7 +83,70 @@ function Category() {
   //for react-check-box
   const [checked, setChecked] = useState([] as any[]);
   const [expanded, setExpanded] = useState([] as any[]);
+  const [checkedForShowing, setCheckedForShowing] = useState([] as any[]);
+  const [expandedArrForshowing, setExpandedArrForshowing] = useState([] as any[]);
 
+  console.log(checkedForShowing, expandedArrForshowing);
+
+  const [updateShow, setUpdateShow] = useState(false);
+  const handleUpdateClose = () => setUpdateShow(false);
+
+  const handleUpdateShow = () => {
+    const renderedCategory = createCategoryList(categoryList);
+    let renderedCheckedArr = [] as any[];
+    let renderedExtandArr = [] as any[];
+
+    if (checked.length === 0) {
+      setCheckedForShowing([]);
+    } else {
+      checked.length > 0 &&
+        checked.forEach((eachChecked) => {
+          const targetData = renderedCategory.find((eachData) => eachData.value === eachChecked);
+
+          targetData && renderedCheckedArr.push(targetData);
+          setCheckedForShowing(renderedCheckedArr);
+        });
+    }
+
+    if (expanded.length === 0) {
+      setExpandedArrForshowing([]);
+    } else {
+      expanded.length > 0 &&
+        expanded.forEach((eachExtend) => {
+          const targetData = renderedCategory.find((eachData) => eachData.value === eachExtend);
+          targetData && renderedExtandArr.push(targetData);
+          setExpandedArrForshowing(renderedExtandArr);
+        });
+    }
+
+    setUpdateShow(true);
+  };
+
+  const handleUpdateTyping = (key: string, value: string, index: number, type: "checked" | "expanded") => {
+    if (type === "checked") {
+      const updatedCheckedArr = checkedForShowing.map((eachChecked, eachIndex) =>
+        index === eachIndex ? { ...eachChecked, [key]: value } : eachChecked
+      );
+
+      setCheckedForShowing(updatedCheckedArr);
+    }
+
+    if (type === "expanded") {
+      const updatedExpnadArr = expandedArrForshowing.map((eachExpand, eachIndex) =>
+        index === eachIndex ? { ...eachExpand, [key]: value } : eachExpand
+      );
+
+      setExpandedArrForshowing(updatedExpnadArr);
+    }
+  };
+
+  const handleUpdateChanges = () => {
+    dispatch(categoryLoading("pending"));
+    setUpdateShow(false);
+    dispatch(categoryLoading("finisihed"));
+  };
+
+  //* modal body
   const modalBody = () => {
     return (
       <>
@@ -106,6 +177,108 @@ function Category() {
     );
   };
 
+  const modalUpdateBody = () => {
+    return (
+      <>
+        <Row>
+          <Col>
+            <h6>Checked List</h6>
+          </Col>
+        </Row>
+
+        {checkedForShowing.length > 0 &&
+          checkedForShowing.map((eachChecked, index) => {
+            return (
+              <Row key={index}>
+                <Col>
+                  <Input
+                    value={eachChecked.name}
+                    type="text"
+                    placeholder="category name"
+                    onChange={(e: any) => handleUpdateTyping("name", e.target.value, index, "checked")}
+                  />
+                </Col>
+
+                <Col>
+                  <select
+                    className="form-control"
+                    onChange={(e: any) => {
+                      setParentCateId(e.target.value);
+                    }}
+                  >
+                    <option>select category</option>
+                    {categoryList !== undefined &&
+                      createCategoryList(categoryList).map((e) => (
+                        <option key={e.value} value={e.value}>
+                          {e.name}
+                        </option>
+                      ))}
+                  </select>
+                </Col>
+
+                <Col>
+                  <select className="form-control">
+                    <option value="">select type</option>
+                    <option value="store">Store</option>
+                    <option value="product">Product</option>
+                    <option value="page">Page</option>
+                  </select>
+                </Col>
+              </Row>
+            );
+          })}
+
+        <Row>
+          <Col>
+            <h6>Expanded List</h6>
+          </Col>
+        </Row>
+
+        {expandedArrForshowing.length > 0 &&
+          expandedArrForshowing.map((eachExpand, index) => {
+            return (
+              <Row key={index}>
+                <Col>
+                  <Input
+                    value={eachExpand.name}
+                    type="text"
+                    placeholder="category name"
+                    onChange={(e: any) => handleUpdateTyping("name", e.target.value, index, "expanded")}
+                  />
+                </Col>
+
+                <Col>
+                  <select
+                    className="form-control"
+                    onChange={(e: any) => {
+                      setParentCateId(e.target.value);
+                    }}
+                  >
+                    <option>select category</option>
+                    {categoryList !== undefined &&
+                      createCategoryList(categoryList).map((e) => (
+                        <option key={e.value} value={e.value}>
+                          {e.name}
+                        </option>
+                      ))}
+                  </select>
+                </Col>
+
+                <Col>
+                  <select className="form-control">
+                    <option value="">select type</option>
+                    <option value="store">Store</option>
+                    <option value="product">Product</option>
+                    <option value="page">Page</option>
+                  </select>
+                </Col>
+              </Row>
+            );
+          })}
+      </>
+    );
+  };
+
   return (
     <Layout sidebar>
       <Container>
@@ -119,58 +292,29 @@ function Category() {
         </Row>
         <Row>
           <Col md={12}>
-            {/* {categoryList !== undefined && renderCategory(categoryList)} */}
             <CheckboxTree
               nodes={renderCategory(categoryList)}
               checked={checked}
               expanded={expanded}
               onCheck={(checked) => setChecked(checked)}
               onExpand={(expanded) => setExpanded(expanded)}
+              icons={{
+                check: <IoIosCheckbox />,
+                uncheck: <IoIosCheckboxOutline />,
+                halfCheck: <IoIosCheckboxOutline />,
+                expandClose: <IoIosArrowForward />,
+                expandOpen: <IoIosArrowDown />,
+              }}
             />
+          </Col>
+          <Col>
+            <button onClick={handleUpdateShow}>update</button>
           </Col>
         </Row>
       </Container>
 
-      <ModalMaker show={show} handleChanges={handleChanges} handleClose={handleClose} modalBody={modalBody} title="category" />
-
-      {/*   <Modal show={show} onHide={handleClose} animation={false}>
-        <Modal.Header closeButton>
-          <Modal.Title>add new category</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Input type="text" placeholder="category name" onChange={(e: any) => setCateName(e.target.value)} />
-          <select
-            className="form-control"
-            value={parentCateId}
-            onChange={(e: any) => {
-              setParentCateId(e.target.value);
-            }}
-          >
-            <option>select category</option>
-            {categoryList !== undefined &&
-              createCategoryList(categoryList).map((e) => (
-                <option key={e.value} value={e.value}>
-                  {e.name}
-                </option>
-              ))}
-          </select>
-          <input
-            type="file"
-            name="categoryImage"
-            onChange={(e: any) => {
-              setCateImg(e.target.files[0]);
-            }}
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleChanges}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
+      <ModalMaker show={show} handleClose={handleClose} handleChanges={handleChanges} modalBody={modalBody} title="category" />
+      <ModalMaker show={updateShow} handleClose={handleUpdateClose} handleChanges={handleUpdateChanges} modalBody={modalUpdateBody} title="Update" />
     </Layout>
   );
 }

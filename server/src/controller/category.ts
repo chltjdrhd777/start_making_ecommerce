@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { CategoryBaseDocumentType } from "../model/category";
 import slugify from "slugify";
 import Category from "../model/category";
@@ -6,10 +6,10 @@ import { UserBaseDocumentType } from "../model/UserModel";
 
 export interface CustomCategorytRequest extends Request<{}, {}, CategoryBaseDocumentType> {
   adminData: UserBaseDocumentType;
+  files: Express.Multer.File[];
 }
 
 const createCategory = (req: CustomCategorytRequest, res) => {
-  //res.status(200).json({ file: req.file, admin: req.adminData });
   const categoryObj = {
     name: req.body.name,
     slug: slugify(req.body.name),
@@ -66,4 +66,6 @@ const getCategory = (req, res) => {
   });
 };
 
-export { createCategory, getCategory };
+const updateCategory = (req: Request, res: Response) => {};
+
+export { createCategory, getCategory, updateCategory };

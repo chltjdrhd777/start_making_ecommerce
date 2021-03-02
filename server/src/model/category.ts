@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 
 export interface CategoryBaseDocumentType extends Document {
-  name: string;
+  name: string | any;
   slug: string;
   parentId?: string;
   categoryImage?: string;
