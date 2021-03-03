@@ -21,37 +21,13 @@ const createCart = (req: CustomCartRequest, res) => {
         action = {
           $set: { "cartItems.$.quantity": isItemAdded.quantity + req.body.item.quantity },
         };
-        /* Cart.findOneAndUpdate(
-          { user: req.userData._id, cartItems: { $elemMatch: { product: targetProduct } } },
-          {
-            $set: { "cartItems.$.quantity": isItemAdded.quantity + req.body.item.quantity },
-          },
-          { new: true },
-          (err, doc) => {
-            if (err) return res.status(400).json({ err });
-            res.status(201).json({ doc });
-          }
-        ); */
       } else {
         (condition = { user: req.userData._id }),
           (action = {
             $push: {
               cartItems: req.body.item,
             },
-          }); /* 
-        Cart.findOneAndUpdate(
-          { user: req.userData._id },
-          {
-            $push: {
-              cartItems: req.body.item,
-            },
-          },
-          { new: true },
-          (err, doc) => {
-            if (err) return res.status(400).json({ err });
-            res.status(200).json({ doc });
-          }
-        ); */
+          });
       }
 
       Cart.findOneAndUpdate(condition, action, { new: true }, (err, doc) => {

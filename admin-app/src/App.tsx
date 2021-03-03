@@ -16,13 +16,7 @@ function App() {
   const token = localStorage.getItem("token");
   const localUserInfo = localStorage.getItem("userInfo");
   const dispatch = useDispatch();
-  /*  const {
-    categories: { categoryList },
-  } = useSelector(selectCategory);
-  const {
-    products: { productList },
-  } = useSelector(selectProduct);
- */
+
   useEffect(() => {
     if (token && localUserInfo) {
       dispatch(

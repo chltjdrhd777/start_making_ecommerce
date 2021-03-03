@@ -34,7 +34,7 @@ const createCategory = (req: CustomCategorytRequest, res) => {
   });
 };
 
-const getCategory = (req, res) => {
+const categoryListRenderFunc = (_req: Request, res: Response, status: number) => {
   Category.find({}, (err, docs) => {
     if (err) return res.status(400).json({ err });
 
@@ -62,10 +62,61 @@ const getCategory = (req, res) => {
     };
     const categoryList = makingCategoryTree(docs);
 
-    res.status(200).json({ success: true, categoryList });
+    res.status(status).json({ success: true, categoryList });
   });
 };
 
-const updateCategory = (req: Request, res: Response) => {};
+const getCategory = (req, res) => {
+  categoryListRenderFunc(undefined, res, 200);
+
+  /*  Category.find({}, (err, docs) => {
+    if (err) return res.status(400).json({ err });
+
+    const makingCategoryTree = (docs, parentId = undefined) => {
+      let categoryList = [];
+      let data;
+
+      if (parentId === undefined) {
+        data = docs.filter((doc) => doc.parentId === undefined);
+      } else {
+        data = docs.filter((doc) => doc.parentId === parentId);
+      }
+
+      for (let each of data) {
+        categoryList.push({
+          _id: each._id,
+          name: each.name,
+          slug: each.slug,
+          parentId: each.parentId,
+          children: makingCategoryTree(docs, each._id.toString()),
+        });
+      }
+
+      return categoryList;
+    };
+    const categoryList = makingCategoryTree(docs);
+
+    res.status(200).json({ success: true, categoryList });
+  }); */
+};
+
+const updateCategory = (req: CustomCategorytRequest, res: Response) => {
+  const { _id, name, parentId } = req.body;
+
+  for (let index in name) {
+    const updatedCategory = {
+      name: name[index],
+      slug: slugify(name[index]),
+    };
+
+    if (parentId[index] !== "undefined") {
+      updatedCategory["parentId"] = parentId[index];
+    }
+
+    Category.findOneAndUpdate({ _id: _id[index] }, updatedCategory, { new: true }, (e, d) => {});
+  }
+
+  categoryListRenderFunc(undefined, res, 201);
+};
 
 export { createCategory, getCategory, updateCategory };

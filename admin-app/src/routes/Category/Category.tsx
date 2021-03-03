@@ -144,10 +144,16 @@ function Category() {
     dispatch(categoryLoading("pending"));
     const form = new FormData();
 
+    for (let eachCate of checkedForShowing) {
+      form.append("_id", eachCate.value);
+      form.append("name", eachCate.name);
+      form.append("parentId", eachCate.parentId && eachCate.parentId);
+    }
+
     for (let eachCate of expandedArrForshowing) {
       form.append("_id", eachCate.value);
       form.append("name", eachCate.name);
-      form.append("parentId", eachCate.parentId ? eachCate.parentId : "");
+      form.append("parentId", eachCate.parentId && eachCate.parentId);
     }
 
     dispatch(updateCategory(form));

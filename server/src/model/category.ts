@@ -5,6 +5,7 @@ export interface CategoryBaseDocumentType extends Document {
   slug: string;
   parentId?: string;
   categoryImage?: string;
+  type?: string;
 }
 
 const categorySchema = new mongoose.Schema(

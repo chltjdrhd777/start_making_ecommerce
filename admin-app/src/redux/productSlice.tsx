@@ -26,7 +26,7 @@ export const setProducts = createAsyncThunk("product/createProduct", async (payl
 
 export const getAllProducts = createAsyncThunk("product/getProduct", async () => {
   try {
-    const response = await axios.get("product/getProduct", undefined);
+    const response = await axios.get("product/getProduct");
     return response;
   } catch (err) {
     return err.response;

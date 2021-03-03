@@ -23,7 +23,7 @@ export interface CategoryState {
 //async actions
 export const getAllCategories = createAsyncThunk("category/getCategories", async () => {
   try {
-    const response = await axios.get("/category/getCategory", undefined);
+    const response = await axios.get("/category/getCategory");
     return response;
   } catch (err) {
     return err.response;
@@ -33,7 +33,7 @@ export const getAllCategories = createAsyncThunk("category/getCategories", async
 export const createCategories = createAsyncThunk("category/createCategory", async (payload: any) => {
   try {
     const response = await axios.post("/category/createCategory", payload, { withCredentials: true });
-    console.log(response);
+    return response;
   } catch (err) {
     return err.response;
   }
@@ -41,8 +41,8 @@ export const createCategories = createAsyncThunk("category/createCategory", asyn
 
 export const updateCategory = createAsyncThunk("category/updateCategory", async (payload: FormData) => {
   try {
-    /*    const response = await axios.post("/category/createCategory", payload, { withCredentials: true }); */
-    console.log(payload.getAll("_id"), payload.getAll("name"), payload.getAll("parentId"));
+    const response = await axios.post("/category/update", payload, { withCredentials: true });
+    return response;
   } catch (err) {
     return err.response;
   }
@@ -68,6 +68,17 @@ const category = createSlice({
       } else {
         state.error = { success: true, errorInfo: undefined };
         state.categories = payload.data;
+      }
+    });
+
+    //update
+    builder.addCase(updateCategory.fulfilled, (state, { payload }) => {
+      console.log(state, payload);
+      if (payload.status === 201) {
+        state.error = { success: true, errorInfo: undefined };
+        state.categories.categoryList = payload.data.categoryList;
+      } else {
+        state.error = { success: false, errorInfo: payload };
       }
     });
   },
