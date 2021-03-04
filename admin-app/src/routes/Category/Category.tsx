@@ -10,7 +10,7 @@ import Input from "../../components/UI/Input/Input";
 import ModalMaker from "../../components/UI/modal/Modals";
 import CheckboxTree, { Node } from "react-checkbox-tree";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
-import { IoIosCheckbox, IoIosCheckboxOutline, IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
+import { IoIosCheckbox, IoIosCheckboxOutline, IoIosArrowForward, IoIosArrowDown, IoIosAdd, IoIosTrash, IoIosFiling } from "react-icons/io";
 
 function Category() {
   const dispatch = useDispatch();
@@ -67,17 +67,22 @@ function Category() {
 
   const handleChanges = () => {
     dispatch(categoryLoading("pending"));
-    const form = new FormData();
-    form.append("name", cateName);
-    form.append("parentId", parentCateId);
-    form.append("categoryImage", cateImg);
 
-    dispatch(createCategories(form));
+    if (cateName === "") {
+      alert("please enter the category name");
+    } else {
+      const form = new FormData();
+      form.append("name", cateName);
+      form.append("parentId", parentCateId);
+      form.append("categoryImage", cateImg);
 
-    dispatch(categoryLoading("finisihed"));
-    setShow(false);
+      dispatch(createCategories(form));
 
-    window.location.reload();
+      dispatch(categoryLoading("finisihed"));
+      setShow(false);
+
+      window.location.reload();
+    }
   };
 
   //for react-check-box
@@ -340,7 +345,21 @@ function Category() {
           <Col md={12}>
             <CateSection>
               <h3>category</h3>
-              <button onClick={handleShow}>add</button>
+              <div className="actionsdiv">
+                <span>Actions : </span>
+                <button onClick={handleShow}>
+                  <IoIosAdd />
+                  add
+                </button>
+                <button onClick={handleDeleteShow}>
+                  <IoIosTrash />
+                  delete
+                </button>
+                <button onClick={handleUpdateShow}>
+                  <IoIosFiling />
+                  update
+                </button>
+              </div>
             </CateSection>
           </Col>
         </Row>
@@ -360,10 +379,6 @@ function Category() {
                 expandOpen: <IoIosArrowDown />,
               }}
             />
-          </Col>
-          <Col>
-            <button onClick={handleDeleteShow}>delete</button>
-            <button onClick={handleUpdateShow}>update</button>
           </Col>
         </Row>
       </Container>
@@ -400,6 +415,20 @@ function Category() {
 const CateSection = styled.section`
   display: flex;
   justify-content: space-between;
+
+  & .actionsdiv {
+    display: flex;
+    align-items: center;
+
+    & button {
+      border: none;
+      margin: 0 5px;
+      font-size: 1rem;
+      &:hover {
+        background-color: #bdbdbd;
+      }
+    }
+  }
 `;
 
 export default Category;
