@@ -68,36 +68,6 @@ const categoryListRenderFunc = (_req: Request, res: Response, status: number) =>
 
 const getCategory = (req, res) => {
   categoryListRenderFunc(undefined, res, 200);
-
-  /*  Category.find({}, (err, docs) => {
-    if (err) return res.status(400).json({ err });
-
-    const makingCategoryTree = (docs, parentId = undefined) => {
-      let categoryList = [];
-      let data;
-
-      if (parentId === undefined) {
-        data = docs.filter((doc) => doc.parentId === undefined);
-      } else {
-        data = docs.filter((doc) => doc.parentId === parentId);
-      }
-
-      for (let each of data) {
-        categoryList.push({
-          _id: each._id,
-          name: each.name,
-          slug: each.slug,
-          parentId: each.parentId,
-          children: makingCategoryTree(docs, each._id.toString()),
-        });
-      }
-
-      return categoryList;
-    };
-    const categoryList = makingCategoryTree(docs);
-
-    res.status(200).json({ success: true, categoryList });
-  }); */
 };
 
 const updateCategory = (req: CustomCategorytRequest, res: Response) => {
@@ -119,4 +89,15 @@ const updateCategory = (req: CustomCategorytRequest, res: Response) => {
   categoryListRenderFunc(undefined, res, 201);
 };
 
-export { createCategory, getCategory, updateCategory };
+const deleteCategories = (req: Request, res: Response) => {
+  try {
+    for (let eachCate of req.body) {
+      Category.findOneAndDelete({ _id: eachCate.value }, undefined, (err, doc) => {});
+    }
+    res.status(200).json({ success: true });
+  } catch (err) {
+    res.status(400).json({ success: false });
+  }
+};
+
+export { createCategory, getCategory, updateCategory, deleteCategories };

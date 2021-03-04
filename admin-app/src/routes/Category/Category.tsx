@@ -3,7 +3,7 @@ import { Col, Container, Row, Modal, Button } from "react-bootstrap";
 import Layout from "../../components/Layout/Layout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { CategoryListType, categoryLoading, createCategories, getAllCategories, updateCategory } from "../../redux/categorySlice";
+import { CategoryListType, categoryLoading, createCategories, deleteCategories, getAllCategories, updateCategory } from "../../redux/categorySlice";
 import { selectCategory } from "../../redux/mainReducer";
 import { useState } from "react";
 import Input from "../../components/UI/Input/Input";
@@ -85,13 +85,10 @@ function Category() {
   const [expanded, setExpanded] = useState([] as any[]);
   const [checkedForShowing, setCheckedForShowing] = useState([] as any[]);
   const [expandedArrForshowing, setExpandedArrForshowing] = useState([] as any[]);
-
   console.log(checkedForShowing, expandedArrForshowing);
 
-  const [updateShow, setUpdateShow] = useState(false);
-  const handleUpdateClose = () => setUpdateShow(false);
-
-  const handleUpdateShow = () => {
+  //* commonly used
+  const makingRenderedCheckedAndExpanded = () => {
     const renderedCategory = createCategoryList(categoryList);
     let renderedCheckedArr = [] as any[];
     let renderedExtandArr = [] as any[];
@@ -118,6 +115,13 @@ function Category() {
           setExpandedArrForshowing(renderedExtandArr);
         });
     }
+  };
+  //*////////////////////
+  const [updateShow, setUpdateShow] = useState(false);
+  const handleUpdateClose = () => setUpdateShow(false);
+
+  const handleUpdateShow = () => {
+    makingRenderedCheckedAndExpanded();
 
     setUpdateShow(true);
   };
@@ -159,6 +163,21 @@ function Category() {
     dispatch(updateCategory(form));
     setUpdateShow(false);
     dispatch(categoryLoading("finisihed"));
+  };
+
+  //for delete
+
+  const [deleteShow, setDeleteShow] = useState(false);
+  const handleDeleteClose = () => setDeleteShow(false);
+  const handleDeleteShow = () => {
+    makingRenderedCheckedAndExpanded();
+
+    setDeleteShow(true);
+  };
+
+  const handleDeleteChanges = () => {
+    dispatch(deleteCategories(checkedForShowing));
+    handleDeleteClose();
   };
 
   //* modal body
@@ -294,6 +313,26 @@ function Category() {
     );
   };
 
+  const modalDeleteBody = () => {
+    return (
+      <>
+        <Row>
+          <Col>
+            <h3>Expanded</h3>
+            {expandedArrForshowing.length > 0 && expandedArrForshowing.map((eachEx, index) => <div key={index}>{eachEx.name}</div>)}
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <h3>Checked</h3>
+            {checkedForShowing.length > 0 && checkedForShowing.map((eachChecked, index) => <div key={index}>{eachChecked.name}</div>)}
+          </Col>
+        </Row>
+      </>
+    );
+  };
+
   return (
     <Layout sidebar>
       <Container>
@@ -323,13 +362,37 @@ function Category() {
             />
           </Col>
           <Col>
+            <button onClick={handleDeleteShow}>delete</button>
             <button onClick={handleUpdateShow}>update</button>
           </Col>
         </Row>
       </Container>
 
+      {/*add modal*/}
       <ModalMaker show={show} handleClose={handleClose} handleChanges={handleChanges} modalBody={modalBody} title="category" />
+
+      {/* update modal */}
       <ModalMaker show={updateShow} handleClose={handleUpdateClose} handleChanges={handleUpdateChanges} modalBody={modalUpdateBody} title="Update" />
+
+      {/* delete modal */}
+      <ModalMaker
+        show={deleteShow}
+        handleClose={handleDeleteClose}
+        modalBody={modalDeleteBody}
+        title="Update"
+        buttons={[
+          {
+            label: "close",
+            color: "danger",
+            onClick: handleDeleteClose,
+          },
+          {
+            label: "delete",
+            color: "primary",
+            onClick: handleDeleteChanges,
+          },
+        ]}
+      />
     </Layout>
   );
 }

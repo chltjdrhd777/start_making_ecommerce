@@ -48,6 +48,14 @@ export const updateCategory = createAsyncThunk("category/updateCategory", async 
   }
 });
 
+export const deleteCategories = createAsyncThunk("category/deleteCategory", async (payload: { value: string; parentId: string; name: string }[]) => {
+  try {
+    const response = await axios.post("/category/delete", payload, { withCredentials: true });
+    return response;
+  } catch (err) {
+    return err.response;
+  }
+});
 //structure
 const category = createSlice({
   name: "category",
@@ -73,10 +81,18 @@ const category = createSlice({
 
     //update
     builder.addCase(updateCategory.fulfilled, (state, { payload }) => {
-      console.log(state, payload);
       if (payload.status === 201) {
         state.error = { success: true, errorInfo: undefined };
         state.categories.categoryList = payload.data.categoryList;
+      } else {
+        state.error = { success: false, errorInfo: payload };
+      }
+    });
+
+    builder.addCase(deleteCategories.fulfilled, (state, { payload }) => {
+      if (payload.status === 200) {
+        state.error = { success: true, errorInfo: undefined };
+        window.location.reload();
       } else {
         state.error = { success: false, errorInfo: payload };
       }

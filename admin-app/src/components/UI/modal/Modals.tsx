@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 
 interface PropType {
-  show: any;
-  handleChanges: any;
-  handleClose: any;
-  modalBody: any;
+  show: boolean;
+  handleChanges?: () => void;
+  handleClose?: () => void;
+  modalBody?: any;
   title?: string;
   closeMeessage?: string;
   saveMessage?: string;
   size?: "sm" | "lg" | "xl";
+  buttons?: { label: string; color: string; onClick: () => void }[];
 }
 
-function Modals({ show, handleChanges, handleClose, modalBody, title, closeMeessage, saveMessage, size }: PropType) {
+function Modals({ show, handleChanges, handleClose, modalBody, title, closeMeessage, saveMessage, size, buttons }: PropType) {
   return (
     <Modal show={show} onHide={handleClose} animation={true} size={size}>
       <Modal.Header closeButton>
@@ -20,12 +21,22 @@ function Modals({ show, handleChanges, handleClose, modalBody, title, closeMeess
       </Modal.Header>
       <Modal.Body>{modalBody()}</Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          {closeMeessage ? closeMeessage : "Close"}
-        </Button>
-        <Button variant="primary" onClick={handleChanges}>
-          {saveMessage ? saveMessage : "Save Changes"}
-        </Button>
+        {buttons ? (
+          buttons.map((eachButtonInfo, index) => (
+            <Button variant={eachButtonInfo.color} onClick={eachButtonInfo.onClick} key={index}>
+              {eachButtonInfo.label}
+            </Button>
+          ))
+        ) : (
+          <>
+            <Button variant="secondary" onClick={handleClose}>
+              {closeMeessage ? closeMeessage : "Close"}
+            </Button>
+            <Button variant="primary" onClick={handleChanges}>
+              {saveMessage ? saveMessage : "Save Changes"}
+            </Button>
+          </>
+        )}
       </Modal.Footer>
     </Modal>
   );
