@@ -8,6 +8,7 @@ export interface CategoryListType {
   name: string;
   slug: string;
   parentId?: string;
+  type?: string;
   children: CategoryListType[];
 }
 
@@ -71,7 +72,7 @@ const category = createSlice({
   extraReducers: (builder) => {
     //login
     builder.addCase(getAllCategories.fulfilled, (state, { payload }) => {
-      if (payload.status === 400) {
+      if (payload !== undefined && payload.status === 400) {
         state.error = { success: false, errorInfo: payload };
       } else {
         state.error = { success: true, errorInfo: undefined };
@@ -81,7 +82,7 @@ const category = createSlice({
 
     //update
     builder.addCase(updateCategory.fulfilled, (state, { payload }) => {
-      if (payload.status === 201) {
+      if (payload !== undefined && payload.status === 201) {
         state.error = { success: true, errorInfo: undefined };
         state.categories.categoryList = payload.data.categoryList;
       } else {
@@ -90,7 +91,7 @@ const category = createSlice({
     });
 
     builder.addCase(deleteCategories.fulfilled, (state, { payload }) => {
-      if (payload.status === 200) {
+      if (payload !== undefined && payload.status === 200) {
         state.error = { success: true, errorInfo: undefined };
         window.location.reload();
       } else {

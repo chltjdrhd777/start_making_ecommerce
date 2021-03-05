@@ -11,6 +11,8 @@ import ModalMaker from "../../components/UI/modal/Modals";
 import CheckboxTree, { Node } from "react-checkbox-tree";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import { IoIosCheckbox, IoIosCheckboxOutline, IoIosArrowForward, IoIosArrowDown, IoIosAdd, IoIosTrash, IoIosFiling } from "react-icons/io";
+import { FormEvent } from "react";
+import { ChangeEvent } from "react";
 
 function Category() {
   const dispatch = useDispatch();
@@ -51,7 +53,7 @@ function Category() {
 
   const createCategoryList = (categories: any, options: any[] = []) => {
     for (let category of categories) {
-      options.push({ value: category._id, name: category.name, parentId: category.parentId });
+      options.push({ value: category._id, name: category.name, parentId: category.parentId, type: category.type });
       if (category.children.length > 0) {
         createCategoryList(category.children, options);
       }
@@ -121,7 +123,9 @@ function Category() {
         });
     }
   };
-  //*////////////////////
+  //*    ////////////////////
+
+  //?update functions
   const [updateShow, setUpdateShow] = useState(false);
   const handleUpdateClose = () => setUpdateShow(false);
 
@@ -131,21 +135,21 @@ function Category() {
     setUpdateShow(true);
   };
 
-  const handleUpdateTyping = (key: string, value: string, index: number, type: "checked" | "expanded") => {
+  const handleUpdateValues = (whatChange: string, value: string, index: number, type: "checked" | "expanded", cb: (arr: any[]) => void) => {
     if (type === "checked") {
       const updatedCheckedArr = checkedForShowing.map((eachChecked, eachIndex) =>
-        index === eachIndex ? { ...eachChecked, [key]: value } : eachChecked
+        index === eachIndex ? { ...eachChecked, [whatChange]: value } : eachChecked
       );
 
-      setCheckedForShowing(updatedCheckedArr);
+      cb(updatedCheckedArr);
     }
 
     if (type === "expanded") {
       const updatedExpnadArr = expandedArrForshowing.map((eachExpand, eachIndex) =>
-        index === eachIndex ? { ...eachExpand, [key]: value } : eachExpand
+        index === eachIndex ? { ...eachExpand, [whatChange]: value } : eachExpand
       );
 
-      setExpandedArrForshowing(updatedExpnadArr);
+      cb(updatedExpnadArr);
     }
   };
 
@@ -157,12 +161,14 @@ function Category() {
       form.append("_id", eachCate.value);
       form.append("name", eachCate.name);
       form.append("parentId", eachCate.parentId && eachCate.parentId);
+      form.append("type", eachCate.type && eachCate.type);
     }
 
     for (let eachCate of expandedArrForshowing) {
       form.append("_id", eachCate.value);
       form.append("name", eachCate.name);
       form.append("parentId", eachCate.parentId && eachCate.parentId);
+      form.append("type", eachCate.type && eachCate.type);
     }
 
     dispatch(updateCategory(form));
@@ -234,7 +240,9 @@ function Category() {
                     value={eachChecked.name}
                     type="text"
                     placeholder="category name"
-                    onChange={(e: any) => handleUpdateTyping("name", e.target.value, index, "checked")}
+                    onChange={(e: any) => {
+                      handleUpdateValues("name", e.target.value, index, "checked", setCheckedForShowing);
+                    }}
                   />
                 </Col>
 
@@ -242,7 +250,7 @@ function Category() {
                   <select
                     className="form-control"
                     onChange={(e: any) => {
-                      setParentCateId(e.target.value);
+                      handleUpdateValues("parentId", e.target.value, index, "checked", setCheckedForShowing);
                     }}
                   >
                     <option>select category</option>
@@ -256,7 +264,13 @@ function Category() {
                 </Col>
 
                 <Col>
-                  <select className="form-control">
+                  <select
+                    defaultValue={eachChecked.type ? eachChecked.type : ""}
+                    className="form-control"
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      handleUpdateValues("type", e.target.value, index, "checked", setCheckedForShowing);
+                    }}
+                  >
                     <option value="">select type</option>
                     <option value="store">Store</option>
                     <option value="product">Product</option>
@@ -282,7 +296,9 @@ function Category() {
                     value={eachExpand.name}
                     type="text"
                     placeholder="category name"
-                    onChange={(e: any) => handleUpdateTyping("name", e.target.value, index, "expanded")}
+                    onChange={(e: any) => {
+                      handleUpdateValues("name", e.target.value, index, "expanded", setExpandedArrForshowing);
+                    }}
                   />
                 </Col>
 
@@ -290,7 +306,8 @@ function Category() {
                   <select
                     className="form-control"
                     onChange={(e: any) => {
-                      setParentCateId(e.target.value);
+                      /*  setParentCateId(e.target.value); */
+                      handleUpdateValues("parentId", e.target.value, index, "expanded", setExpandedArrForshowing);
                     }}
                   >
                     <option>select category</option>
@@ -304,7 +321,13 @@ function Category() {
                 </Col>
 
                 <Col>
-                  <select className="form-control">
+                  <select
+                    defaultValue={eachExpand.type ? eachExpand.type : ""}
+                    className="form-control"
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      handleUpdateValues("type", e.target.value, index, "expanded", setExpandedArrForshowing);
+                    }}
+                  >
                     <option value="">select type</option>
                     <option value="store">Store</option>
                     <option value="product">Product</option>
@@ -323,14 +346,14 @@ function Category() {
       <>
         <Row>
           <Col>
-            <h3>Expanded</h3>
+            <p>{"<Extended List>"}</p>
             {expandedArrForshowing.length > 0 && expandedArrForshowing.map((eachEx, index) => <div key={index}>{eachEx.name}</div>)}
           </Col>
         </Row>
 
         <Row>
           <Col>
-            <h3>Checked</h3>
+            <p>{"<Checked List>"}</p>
             {checkedForShowing.length > 0 && checkedForShowing.map((eachChecked, index) => <div key={index}>{eachChecked.name}</div>)}
           </Col>
         </Row>
@@ -387,14 +410,21 @@ function Category() {
       <ModalMaker show={show} handleClose={handleClose} handleChanges={handleChanges} modalBody={modalBody} title="category" />
 
       {/* update modal */}
-      <ModalMaker show={updateShow} handleClose={handleUpdateClose} handleChanges={handleUpdateChanges} modalBody={modalUpdateBody} title="Update" />
+      <ModalMaker
+        show={updateShow}
+        handleClose={handleUpdateClose}
+        handleChanges={handleUpdateChanges}
+        modalBody={modalUpdateBody}
+        title="Update"
+        size="lg"
+      />
 
       {/* delete modal */}
       <ModalMaker
         show={deleteShow}
         handleClose={handleDeleteClose}
         modalBody={modalDeleteBody}
-        title="Update"
+        title="Delete"
         buttons={[
           {
             label: "close",

@@ -39,8 +39,16 @@ const categoryListRenderFunc = (_req: Request, res: Response, status: number) =>
     if (err) return res.status(400).json({ err });
 
     const makingCategoryTree = (docs, parentId = undefined) => {
+      interface DataType {
+        _id: string;
+        name: string;
+        slug: string;
+        parentId?: string;
+        type?: string;
+        children?: DataType[];
+      }
       let categoryList = [];
-      let data;
+      let data: DataType[];
 
       if (parentId === undefined) {
         data = docs.filter((doc) => doc.parentId === undefined);
@@ -49,13 +57,16 @@ const categoryListRenderFunc = (_req: Request, res: Response, status: number) =>
       }
 
       for (let each of data) {
-        categoryList.push({
+        let targetDataForPush = {
           _id: each._id,
           name: each.name,
           slug: each.slug,
           parentId: each.parentId,
+          type: each.type,
           children: makingCategoryTree(docs, each._id.toString()),
-        });
+        };
+
+        categoryList.push(targetDataForPush);
       }
 
       return categoryList;
@@ -70,8 +81,8 @@ const getCategory = (req, res) => {
   categoryListRenderFunc(undefined, res, 200);
 };
 
-const updateCategory = (req: CustomCategorytRequest, res: Response) => {
-  const { _id, name, parentId } = req.body;
+const updateCategory = async (req: CustomCategorytRequest, res: Response) => {
+  const { _id, name, parentId, type } = req.body;
 
   for (let index in name) {
     const updatedCategory = {
@@ -83,7 +94,11 @@ const updateCategory = (req: CustomCategorytRequest, res: Response) => {
       updatedCategory["parentId"] = parentId[index];
     }
 
-    Category.findOneAndUpdate({ _id: _id[index] }, updatedCategory, { new: true }, (e, d) => {});
+    if (type[index] !== "undefined") {
+      updatedCategory["type"] = type[index];
+    }
+
+    await Category.findOneAndUpdate({ _id: _id[index] }, updatedCategory, { new: true }, (e, d) => {});
   }
 
   categoryListRenderFunc(undefined, res, 201);
