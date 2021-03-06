@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { Col, Container, Row, Modal, Button } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import Layout from "../../components/Layout/Layout";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { CategoryListType, categoryLoading, createCategories, deleteCategories, getAllCategories, updateCategory } from "../../redux/categorySlice";
+import { CategoryListType, categoryLoading, createCategories, deleteCategories, updateCategory } from "../../redux/categorySlice";
 import { selectCategory } from "../../redux/mainReducer";
 import { useState } from "react";
 import Input from "../../components/UI/Input/Input";
@@ -11,8 +11,8 @@ import ModalMaker from "../../components/UI/modal/Modals";
 import CheckboxTree, { Node } from "react-checkbox-tree";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import { IoIosCheckbox, IoIosCheckboxOutline, IoIosArrowForward, IoIosArrowDown, IoIosAdd, IoIosTrash, IoIosFiling } from "react-icons/io";
-import { FormEvent } from "react";
 import { ChangeEvent } from "react";
+import { createCategoryList } from "../../controller/common";
 
 function Category() {
   const dispatch = useDispatch();
@@ -51,7 +51,7 @@ function Category() {
     return renderedCategory;
   };
 
-  const createCategoryList = (categories: any, options: any[] = []) => {
+  /*  const createCategoryList = (categories: any, options: any[] = []) => {
     for (let category of categories) {
       options.push({ value: category._id, name: category.name, parentId: category.parentId, type: category.type });
       if (category.children.length > 0) {
@@ -60,7 +60,7 @@ function Category() {
     }
 
     return options;
-  };
+  }; */
 
   //for modal
   const [show, setShow] = useState(false);
@@ -135,7 +135,13 @@ function Category() {
     setUpdateShow(true);
   };
 
-  const handleUpdateValues = (whatChange: string, value: string, index: number, type: "checked" | "expanded", cb: (arr: any[]) => void) => {
+  const handleUpdateValues = (
+    whatChange: string,
+    value: string | undefined,
+    index: number,
+    type: "checked" | "expanded",
+    cb: (arr: any[]) => void
+  ) => {
     if (type === "checked") {
       const updatedCheckedArr = checkedForShowing.map((eachChecked, eachIndex) =>
         index === eachIndex ? { ...eachChecked, [whatChange]: value } : eachChecked
@@ -254,12 +260,13 @@ function Category() {
                     }}
                   >
                     <option>select category</option>
-                    {categoryList !== undefined &&
-                      createCategoryList(categoryList).map((e) => (
-                        <option key={e.value} value={e.value}>
-                          {e.name}
+                    {createCategoryList(categoryList).map((eachCate) => {
+                      return (
+                        <option key={eachCate.value} value={eachCate.value}>
+                          {eachCate.name}
                         </option>
-                      ))}
+                      );
+                    })}
                   </select>
                 </Col>
 

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Products from "./routes/products/Products";
 import Orders from "./routes/orders/Orders";
 import Category from "./routes/Category/Category";
+import Page from "./routes/Page/Page";
 import { categoryLoading, getAllCategories } from "./redux/categorySlice";
 import product, { getAllProducts } from "./redux/productSlice";
 import { selectCategory, selectProduct } from "./redux/mainReducer";
@@ -39,6 +40,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route path="/login" component={Login} />
+          <Route path="/page" component={Page} />
           <Route path="/register" component={Register} />
           <Route path="/products" component={Products} />
           <Route path="/category" component={Category} />

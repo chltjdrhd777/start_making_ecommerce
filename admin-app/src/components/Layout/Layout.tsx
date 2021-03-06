@@ -26,6 +26,9 @@ export default function Layout(props: PropsWithChildren<{ sidebar?: boolean }>) 
                   {userInfo !== undefined && userInfo.role === "admin" && (
                     <>
                       <li>
+                        <NavLink to="/page">Pages</NavLink>
+                      </li>
+                      <li>
                         <NavLink to="/products">Products</NavLink>
                       </li>
                       <li>
