@@ -262,7 +262,7 @@ function Category() {
                     <option>select category</option>
                     {createCategoryList(categoryList).map((eachCate) => {
                       return (
-                        <option key={eachCate.value} value={eachCate.value}>
+                        <option key={eachCate.value} value={eachCate.value === eachChecked.value ? eachChecked.parentId : eachCate.value}>
                           {eachCate.name}
                         </option>
                       );
@@ -319,11 +319,20 @@ function Category() {
                   >
                     <option>select category</option>
                     {categoryList !== undefined &&
-                      createCategoryList(categoryList).map((e) => (
-                        <option key={e.value} value={e.value}>
-                          {e.name}
-                        </option>
-                      ))}
+                      createCategoryList(categoryList).map((e) => {
+                        const valueTester = () => {
+                          if (e.value === eachExpand.value && eachExpand.parentId !== undefined) {
+                            return eachExpand.parentId;
+                          } else if (e.value === eachExpand.value && eachExpand.parentId === undefined) {
+                            return "undefined";
+                          }
+                        };
+                        return (
+                          <option key={e.value} value={valueTester()}>
+                            {e.name}
+                          </option>
+                        );
+                      })}
                   </select>
                 </Col>
 
