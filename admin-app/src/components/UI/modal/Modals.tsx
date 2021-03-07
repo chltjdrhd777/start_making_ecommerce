@@ -26,7 +26,7 @@ function Modals({ show, handleChanges, handleClose, modalBody, title, closeMeess
         <Modal.Footer>
           {buttons ? (
             buttons.map((eachButtonInfo, index) => (
-              <Button variant={eachButtonInfo.color} onClick={eachButtonInfo.onClick} key={index}>
+              <Button variant={eachButtonInfo.color} onClick={eachButtonInfo.onClick} key={index} className="custom_button_color_darkblue">
                 {eachButtonInfo.label}
               </Button>
             ))
@@ -56,6 +56,12 @@ const ModalCss = styled.section<{ css?: boolean }>`
     & .close {
       ${(props) =>
         props.css && { background: "white", opacity: "1", borderRadius: "10px", padding: "0px 5px", marginTop: "-6px", marginRight: "1px" }}
+    }
+  }
+
+  .modal-footer {
+    & .custom_button_color_darkblue {
+      background-color: ${(props) => props.css && "#425971"};
     }
   }
 `;

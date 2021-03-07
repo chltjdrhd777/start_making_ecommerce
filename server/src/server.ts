@@ -9,6 +9,7 @@ import adminAuthRoutes from "./routes/authRoutes.admin";
 import categoryRoutes from "./routes/categoryRoutes";
 import productRoutes from "./routes/productRoutes";
 import cartRoutes from "./routes/cartRoutes";
+import pageRoutes from "./routes/pageRoutes";
 import path from "path";
 //initializing app
 const app = express();
@@ -46,6 +47,7 @@ app.use("/api/auth_admin", adminAuthRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/page", pageRoutes);
 //PORT
 app.listen(process.env.PORT, () => {
   console.log(`listening port : ${process.env.PORT}`);
