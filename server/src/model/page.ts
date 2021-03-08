@@ -1,6 +1,14 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 
-export interface PageBaseDocumentType extends Document {}
+export interface PageBaseDocumentType extends Document {
+  title: string;
+  description: string;
+  banners: { img: string; href: string }[];
+  products: { img: string; href: string }[];
+  categoryId: any;
+  createdBy: any;
+  type: string;
+}
 
 const pageSchema = new mongoose.Schema(
   {
@@ -24,7 +32,7 @@ const pageSchema = new mongoose.Schema(
         href: String,
       },
     ],
-    category: {
+    categoryId: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Category",
     },
@@ -32,8 +40,11 @@ const pageSchema = new mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: "User",
     },
+    type: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
 
-export default mongoose.model<PageBaseDocumentType>("Part", pageSchema);
+export default mongoose.model<PageBaseDocumentType>("Page", pageSchema);
