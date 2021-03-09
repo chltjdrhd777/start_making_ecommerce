@@ -11,8 +11,8 @@ export interface CustomProductRequest extends Request<{}, {}, ProductBaseDocumen
 }
 
 const createProduct = (req: CustomProductRequest, res: Response) => {
-  //res.status(200).json({ files: req.files, admin: req.adminData });
-  const { name, price, description, offer, review, category, updatedAt, quantity } = req.body;
+  /*  res.status(200).json({ files: req.files, admin: req.adminData, body: req.body }); */
+  const { name, price, description, category, quantity } = req.body;
 
   let productPictures = [] as { img: string }[];
 
@@ -31,14 +31,21 @@ const createProduct = (req: CustomProductRequest, res: Response) => {
     category,
     createdBy: req.adminData._id,
     quantity,
-    review,
   });
 
+  console.log(product);
+
   product.save(undefined, (err, doc) => {
+    if (err) return res.status(400).json({ err });
+    console.log(doc);
+    return res.status(200).json({ doc });
+  });
+
+  /*   product.save(undefined, (err, doc) => {
     if (err) return res.status(400).json({ success: false, err });
 
     res.status(200).json({ success: true, doc });
-  });
+  }); */
 };
 
 const getProduct = (req: Request, res: Response) => {
@@ -63,7 +70,6 @@ const getProductBySlug = (req: Request, res: Response) => {
     .select("_id")
     .exec((err, target) => {
       if (err) return res.status(400).json({ err });
-
       if (target) {
         Product.find({ category: target._id }, undefined, undefined, (err, docs) => {
           if (err) res.status(400).json({ err });

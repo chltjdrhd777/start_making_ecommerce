@@ -1,19 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../axios/axios";
 import { ProductBaseDocumentType } from "../../../server/src/model/product";
-//typeDef
-
-export interface ProductsType {
-  docs: ProductBaseDocumentType[];
-  productByPrice:
-    | {
-        under10: ProductBaseDocumentType[];
-        is10to15: ProductBaseDocumentType[];
-        is15to20: ProductBaseDocumentType[];
-        over20: ProductBaseDocumentType[];
-      }
-    | any;
-}
+import { PageBaseDocumentType } from "../../../server/src/model/page";
 
 export interface ProductsType2 {
   docs: ProductBaseDocumentType[];
@@ -29,6 +17,7 @@ export interface ProductState {
     success: boolean;
     errorInfo: any;
   };
+  pageInfo: PageBaseDocumentType;
 }
 
 //async actions
@@ -41,11 +30,26 @@ export const getProductBySlug = createAsyncThunk("product/getProductBySlug", asy
   }
 });
 
+interface GetPagePayloadType {
+  categoryId: string;
+  type: string;
+}
+
+export const getPage = createAsyncThunk("page/getPage", async ({ categoryId, type }: GetPagePayloadType) => {
+  try {
+    const response = await axios.get(`page/getPage/${categoryId}/${type}`);
+
+    return response;
+  } catch (err) {
+    return err.response;
+  }
+});
+
 //structure
 const product = createSlice({
   name: "productBySlug",
 
-  initialState: { products: {}, loading: "ready", error: { success: false, errorInfo: undefined } } as ProductState,
+  initialState: { products: {}, loading: "ready", error: { success: false, errorInfo: undefined }, pageInfo: {} } as ProductState,
 
   reducers: {
     Loading: (state, { payload }) => {
@@ -60,6 +64,15 @@ const product = createSlice({
       } else {
         state.error = { success: true, errorInfo: undefined };
         state.products = payload.data;
+      }
+    });
+
+    builder.addCase(getPage.fulfilled, (state, { payload }) => {
+      if (payload.status === 400) {
+        state.error = { success: false, errorInfo: payload };
+      } else {
+        state.error = { success: true, errorInfo: undefined };
+        state.pageInfo = payload.data.doc;
       }
     });
   },

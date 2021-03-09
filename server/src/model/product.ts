@@ -30,7 +30,6 @@ const productSchema: Schema<ProductBaseDocumentType, ProductStatics> = new mongo
     slug: {
       type: String,
       required: true,
-      unique: true,
     },
     price: {
       type: String,

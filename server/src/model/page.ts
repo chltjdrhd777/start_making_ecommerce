@@ -8,6 +8,7 @@ export interface PageBaseDocumentType extends Document {
   categoryId: any;
   createdBy: any;
   type: string;
+  updatedAt: Date;
 }
 
 const pageSchema = new mongoose.Schema(
@@ -35,6 +36,7 @@ const pageSchema = new mongoose.Schema(
     categoryId: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: "Category",
+      unique: true,
     },
     createdBy: {
       type: mongoose.SchemaTypes.ObjectId,

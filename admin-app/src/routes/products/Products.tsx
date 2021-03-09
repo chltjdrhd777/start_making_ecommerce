@@ -71,7 +71,6 @@ function Products() {
       dispatch(setProducts(form));
       handleAddClose();
       dispatch(categoryLoading("finisihed"));
-      window.location.reload();
     }
   };
 

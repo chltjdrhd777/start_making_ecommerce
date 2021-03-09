@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import Home from "./routes/Home";
 import { categoryLoading, getAllCategories } from "./redux/categorySlice";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ProductList from "routes/ProductList";
-import { getProductBySlug } from "redux/productslice";
 
 function App() {
   const dispatch = useDispatch();

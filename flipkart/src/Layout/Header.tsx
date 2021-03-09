@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import styled from "styled-components/macro";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectCategory } from "redux/mainReducer";
 
 function Header(props: PropsWithChildren<{}>) {
@@ -10,7 +10,11 @@ function Header(props: PropsWithChildren<{}>) {
     for (let category of categoryList) {
       renderedCategory.push(
         <li key={category._id}>
-          {category.parentId ? <a href={category.slug}>{category.name}</a> : <span>{category.name}</span>}
+          {category.parentId ? (
+            <a href={`${category.slug}?categoryId=${category._id}&type=${category.type}`}>{category.name}</a>
+          ) : (
+            <span>{category.name}</span>
+          )}
 
           {category.children.length > 0 && <ul>{renderCategory(category.children)}</ul>}
         </li>
@@ -75,6 +79,7 @@ const SubMenueNav = styled.nav`
         right: 0;
         display: none;
         border: 1px solid lightgrey;
+        z-index: 1;
 
         //* li = children's list
         & > li {

@@ -8,3 +8,7 @@ export const createStore = () => {
     middleware: [ReduxThunk],
   });
 };
+
+const forTypeDef = createStore().getState;
+
+export type RootState = ReturnType<typeof forTypeDef>;

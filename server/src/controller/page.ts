@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { UserBaseDocumentType } from "../model/UserModel";
 import Page, { PageBaseDocumentType } from "../model/page";
 
-export interface CustomPageRequest extends Request<{}, {}, PageBaseDocumentType> {
+export interface CustomPageRequest extends Request<{ categoryId: string; type: string }, {}, PageBaseDocumentType> {
   adminData: UserBaseDocumentType;
 }
 
@@ -33,12 +33,32 @@ const createPage = (req: CustomPageRequest, res: Response) => {
 
   req.body.createdBy = req.adminData._id;
 
-  const page = new Page(req.body);
+  Page.findOne({ categoryId: req.body.categoryId }, undefined, undefined, (err, doc) => {
+    if (err) return res.status(400).json({ err });
+    if (doc) {
+      Page.findOneAndUpdate({ categoryId: req.body.categoryId }, req.body, { new: true }, (err, doc) => {
+        if (err) return res.status(400).json({ err });
+        return res.status(201).json({ doc });
+      });
+    } else {
+      const page = new Page(req.body);
 
-  page.save((err, doc) => {
-    if (err) return res.status(400).json({ success: false, err });
-    return res.status(201).json({ doc });
+      page.save((err, doc) => {
+        if (err) return res.status(400).json({ success: false, err });
+        return res.status(201).json({ doc });
+      });
+    }
   });
 };
 
-export { createPage };
+const getPage = (req: CustomPageRequest, res: Response) => {
+  const { categoryId, type } = req.params;
+  if (type === "page") {
+    Page.findOne({ categoryId: categoryId }, undefined, { new: true }, (err, doc) => {
+      if (err) return res.status(400).json({ err });
+      return res.status(200).json({ doc });
+    });
+  }
+};
+
+export { createPage, getPage };
