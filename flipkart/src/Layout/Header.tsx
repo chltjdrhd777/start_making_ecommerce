@@ -1,10 +1,13 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import styled from "styled-components/macro";
 import { useSelector } from "react-redux";
 import { selectCategory } from "redux/mainReducer";
+import { BsSearch } from "react-icons/all";
+import Logo from "imgs/logo.png";
 
 function Header(props: PropsWithChildren<{}>) {
   const { categories } = useSelector(selectCategory);
+
   const renderCategory = (categoryList: any[]) => {
     let renderedCategory = [];
     for (let category of categoryList) {
@@ -26,7 +29,31 @@ function Header(props: PropsWithChildren<{}>) {
 
   return (
     <>
-      <Headerheader>header</Headerheader>
+      <Headerheader>
+        <HeaderContainerdiv>
+          <div className="logo_input_cont">
+            <div className="header_logo">
+              <img src={Logo} alt="" />
+            </div>
+
+            <div className="header_input">
+              <input type="text" placeholder="Search what you find here" />
+              <BsSearch />
+            </div>
+          </div>
+
+          <div className="header_menues">
+            <button>Login</button>
+            <button>Login</button>
+            <button>Login</button>
+            <button>Login</button>
+            <button>Login</button>
+            <button>Login</button>
+            <button>Login</button>
+            <div className=""></div>
+          </div>
+        </HeaderContainerdiv>
+      </Headerheader>
       <SubMenueNav>
         <ul>{categories.categoryList !== undefined && categories.categoryList.length > 0 && renderCategory(categories.categoryList)}</ul>
       </SubMenueNav>
@@ -38,7 +65,61 @@ function Header(props: PropsWithChildren<{}>) {
 const Headerheader = styled.header`
   width: 100%;
   height: 70px;
-  background-color: #a8c9ff;
+  background-color: #2874f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const HeaderContainerdiv = styled.div`
+  display: flex;
+  align-items: center;
+  width: 80%;
+  height: 100%;
+
+  & .logo_input_cont {
+    display: flex;
+    align-items: center;
+    flex: 1;
+
+    & .header_logo {
+      width: 50px;
+      height: 50px;
+      overflow: hidden;
+
+      & img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    & .header_input {
+      height: 35px;
+      background-color: white;
+      box-sizing: border-box;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      border-radius: 5px;
+      width: 80%;
+
+      & input {
+        height: 100%;
+        border: none;
+        outline: none;
+        font-size: 15px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+      }
+
+      & svg {
+        color: #2874f0;
+        font-size: 20px;
+      }
+    }
+  }
 `;
 
 //article = menuheader
@@ -74,12 +155,12 @@ const SubMenueNav = styled.nav`
       //* ul = children container
       & > ul {
         position: absolute;
-        background-color: #f8ffff;
+        background-color: #ffffff;
         left: 0;
         right: 0;
         display: none;
         border: 1px solid lightgrey;
-        z-index: 1;
+        z-index: 999;
 
         //* li = children's list
         & > li {
