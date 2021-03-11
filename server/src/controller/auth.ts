@@ -40,7 +40,7 @@ const register = (req: CustomUserRequest, res: Response) => {
 const login = (req: CustomUserRequest, res: Response) => {
   User.findOne({ email: req.body.email }, null, null, (err, targetUser) => {
     //conditions/////
-    if (err) return res.status(400).json({ success: false, message: "cannot find user" });
+    if (err) return res.status(400).json({ success: false, message: "cannot login" });
 
     if (!targetUser) return res.status(400).json({ success: false, message: "no user" });
 

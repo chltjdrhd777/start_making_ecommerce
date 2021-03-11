@@ -59,7 +59,7 @@ const product = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(getProductBySlug.fulfilled, (state, { payload }) => {
-      if (payload.status === 400) {
+      if (payload && payload.status === 400) {
         state.error = { success: false, errorInfo: payload };
       } else {
         state.error = { success: true, errorInfo: undefined };
@@ -68,7 +68,7 @@ const product = createSlice({
     });
 
     builder.addCase(getPage.fulfilled, (state, { payload }) => {
-      if (payload.status === 400) {
+      if (payload && payload.status === 400) {
         state.error = { success: false, errorInfo: payload };
       } else {
         state.error = { success: true, errorInfo: undefined };

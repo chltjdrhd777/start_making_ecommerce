@@ -31,7 +31,7 @@ function Carousel({ typecheck, pageData }: CarouselAndCardsProptype) {
     if (isClicked) {
       setTimeout(() => {
         setIsclicked(false);
-      }, 5000);
+      }, 2000);
     }
   }, [isClicked]);
 
@@ -83,10 +83,10 @@ const Conatiner = styled.div`
   height: 50vh;
   min-width: 50em;
   min-height: 20em;
-  background-color: black;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
+
   & > p {
     color: white;
     position: absolute;
@@ -135,11 +135,12 @@ const ButtonDefault = styled.button`
   font-size: x-large;
   outline: none;
   transition: all 0.3s ease-in-out;
+  z-index: 100;
+
   &:hover {
     background-color: white;
     color: lightgray;
   }
-  z-index: 1;
 `;
 
 const Button1 = styled(ButtonDefault)``;

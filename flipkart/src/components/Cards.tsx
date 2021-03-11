@@ -3,7 +3,6 @@ import styled from "styled-components/macro";
 import { CarouselAndCardsProptype } from "components/Carousel";
 
 function Cards({ typecheck, pageData }: CarouselAndCardsProptype) {
-  console.log(pageData);
   return (
     <CardContainerSection>
       {pageData?.products &&

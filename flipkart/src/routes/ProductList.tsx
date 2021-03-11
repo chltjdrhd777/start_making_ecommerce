@@ -11,12 +11,14 @@ export interface PramsType2 extends RouteComponentProps<{ slug: string }> {}
 function ProductList(props: PramsType2) {
   const typeChecker = paramRendor(props.location.search) as { categoryId: string; type: string };
   const pageCrossRoads = () => {
-    switch (typeChecker.type) {
-      case "store":
-        return <StorepageForSamsung {...props} />;
+    if (typeChecker) {
+      switch (typeChecker.type) {
+        case "store":
+          return <StorepageForSamsung {...props} />;
 
-      case "page":
-        return <StorepageForApple {...props} />;
+        case "page":
+          return <StorepageForApple {...props} />;
+      }
     }
   };
 
